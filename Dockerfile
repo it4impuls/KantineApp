@@ -19,7 +19,7 @@ COPY . .
 RUN apt update && apt install -y python3-dev libldap2-dev libsasl2-dev libssl-dev gunicorn default-libmysqlclient-dev build-essential
 RUN pip install -r requirements.txt && pip install gunicorn
 
-EXPOSE 8080
+EXPOSE 80
 
 RUN python manage.py makemigrations
 RUN python manage.py migrate

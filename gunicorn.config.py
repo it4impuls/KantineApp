@@ -7,7 +7,7 @@ loglevel = "debug"
 # The number of worker processes for handling requests
 workers = 2
 # The socket to bind
-bind = ":8080"
+bind = ":80"
 # Restart workers when code changes (development only!)
 # reload = True
 preload_app = True
