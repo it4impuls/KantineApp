@@ -95,10 +95,10 @@ jobs:
       #     DB_ADDR: ${{ vars.DB_ADDR }}
       #     DB_PORT: ${{ vars.DB_PORT }}
       # #     DB_ENGINE: ${{ vars.DB_ENGINE }}
-      - name: Stop old service
-        run: docker compose down
       - name: get env file
         run: ln -s ~/.env .
+      - name: Stop old service
+        run: docker compose down
       # - name: dbg
       #   run: echo $USER
       - name: Run now service
