@@ -13,7 +13,8 @@ services:
         DB_ADDR: ${DB_ADDR}
         DB_PORT: ${DB_PORT}
         DB_ENGINE: ${DB_ENGINE}
-    # volumes:
+    volumes:
+      ./logs/dev.log:/var/log/gunicorn/dev.log
       # - ./backend/desksharing-web/db.sqlite3:/opt/services/djangoapp/src/desksharing-web/db.sqlite3 # <-- sync database
       # DEV ONLY:
       # - ./:/opt/services/djangoapp/src/
