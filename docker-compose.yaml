@@ -3,12 +3,13 @@ services:
   djangoapp:
     build:
       dockerfile: ./Dockerfile
+      args:
+        DJANGO_SUPERUSER_USERNAME: ${DJANGO_SUPERUSER_USERNAME}
+        DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD}
+        DJANGO_SUPERUSER_EMAIL: ${DJANGO_SUPERUSER_EMAIL}
     ports:
       - "80:80"
-    args:
-      DJANGO_SUPERUSER_USERNAME: ${DJANGO_SUPERUSER_USERNAME}
-      DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD}
-      DJANGO_SUPERUSER_EMAIL: ${DJANGO_SUPERUSER_EMAIL}
+    
     # volumes:
     #   - ~/logs/:/var/log/gunicorn/
       # - ./backend/desksharing-web/db.sqlite3:/opt/services/djangoapp/src/desksharing-web/db.sqlite3 # <-- sync database
