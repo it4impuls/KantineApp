@@ -10,10 +10,10 @@ services:
     ports:
       - "80:80"
     
-    # volumes:
-    #   - ~/logs/:/var/log/gunicorn/
-      # - ./backend/desksharing-web/db.sqlite3:/opt/services/djangoapp/src/desksharing-web/db.sqlite3 # <-- sync database
+    volumes:
+      # - ~/logs/:/var/log/gunicorn/
+      # - ./db.sqlite3:/opt/services/djangoapp/src/db.sqlite3 # <-- sync database
       # DEV ONLY:
-      # - ./:/opt/services/djangoapp/src/
+      - ./:/opt/services/djangoapp/src/
     env_file:
       - .env

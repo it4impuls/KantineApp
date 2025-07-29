@@ -11,10 +11,9 @@ ENV DJANGO_SUPERUSER_USERNAME=$DJANGO_SUPERUSER_USERNAME
 ENV DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD
 
 
-RUN mkdir -p $WORKDIR
+# RUN mkdir -p $WORKDIR
 WORKDIR $WORKDIR
 
-COPY . .
 
 RUN apt update && apt install -y python3-dev libldap2-dev libsasl2-dev libssl-dev gunicorn default-libmysqlclient-dev build-essential
 RUN pip install -r requirements.txt && pip install gunicorn
@@ -26,7 +25,7 @@ RUN python manage.py migrate
 RUN ["python", "manage.py", "collectstatic", "--no-input", "-v 2"]
 RUN python manage.py createsuperuser --noinput
 RUN echo $WORKDIR
-ENTRYPOINT ["gunicorn", "-c /opt/services/djangoapp/src/gunicorn.config.py"]
+ENTRYPOINT ["gunicorn", "-c gunicorn.config.py"]
 # ENTRYPOINT gunicorn --bind 0.0.0.0:8080 kantineApp.wsgi:application
 
 # ENTRYPOINT ["sh", "entrypoint.sh"]
