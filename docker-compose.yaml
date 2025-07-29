@@ -4,7 +4,7 @@ services:
     build:
       dockerfile: ./Dockerfile
     volumes:
-      - ./logs/dev.log:/var/log/gunicorn/dev.log
+      - ./logs/:/var/log/gunicorn/
       # - ./backend/desksharing-web/db.sqlite3:/opt/services/djangoapp/src/desksharing-web/db.sqlite3 # <-- sync database
       # DEV ONLY:
       # - ./:/opt/services/djangoapp/src/
