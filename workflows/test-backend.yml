@@ -2,10 +2,6 @@ name: Test backend
 on:
   pull_request:
     types: [opened, edited, synchronize]
-    paths:
-      - digi_log_be/digi_log/**
-      - digi_log_be/digilog_backend/**
-      - .github/workflows/test-backend.yml
   workflow_dispatch:
 concurrency:
   group: backend-test-${{ github.event.pull_request.number || github.ref_name }}
@@ -13,10 +9,7 @@ concurrency:
 
 jobs:
   test-backend:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./digi_log_be
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
 

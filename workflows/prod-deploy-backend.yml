@@ -3,17 +3,14 @@ on:
   push:
     branches:
     - main
-    paths:
-    - digi_log_be/**
-    - .github/workflows/prod-deploy-backend.yml
   workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
-  CONTAINER_NAME: kursplan_be
-  IMAGE_NAME: digitales-logbuch_be
+  CONTAINER_NAME: kantine_be
+  IMAGE_NAME: kantine_app
   VERSION: ${{github.ref_name}}
-  DOCKERFILE_PATH: digi_log_be
+  DOCKERFILE_PATH: kantine_app
   UNAME: ${{ github.repository_owner }}
 jobs: 
   build: 
