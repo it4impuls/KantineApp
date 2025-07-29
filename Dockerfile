@@ -1,5 +1,5 @@
 # start from an official image
-FROM python:3.12
+FROM python:3.14
 LABEL name="backend-gunicorn"
 # args
 ARG WORKDIR=/opt/services/djangoapp/src
