@@ -10,15 +10,11 @@ env:
   CONTAINER_NAME: kantine_be
   IMAGE_NAME: kantine_app
   VERSION: ${{github.ref_name}}
-  DOCKERFILE_PATH: kantine_app
   UNAME: ${{ github.repository_owner }}
 jobs: 
   build: 
     # runs-on: [ubuntu-latest,build,self-hosted]
     runs-on: [self-hosted]
-    defaults:
-      run:
-        working-directory: ${{env.DOCKERFILE_PATH}}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -44,7 +40,6 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ${{env.DOCKERFILE_PATH}}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
