@@ -102,4 +102,4 @@ jobs:
       # - name: dbg
       #   run: echo $USER
       - name: Run now service
-        run: docker compose up -d
+        run: docker compose up -d --build
