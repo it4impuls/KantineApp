@@ -1,2 +1,2 @@
 
-gunicorn -c ./config/gunicorn.config.py
+gunicorn -c ./gunicorn.config.py

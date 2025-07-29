@@ -5,69 +5,99 @@ on:
     - main
   workflow_dispatch:
 
-env:
-  REGISTRY: ghcr.io
-  CONTAINER_NAME: kantine_be
-  IMAGE_NAME: kantine_app
-  VERSION: ${{github.ref_name}}
-  UNAME: ${{ github.repository_owner }}
+# env:
+#   REGISTRY: ghcr.io
+#   CONTAINER_NAME: kantine_be
+#   IMAGE_NAME: kantine_app
+#   VERSION: ${{github.ref_name}}
+#   UNAME: ${{ github.repository_owner }}
+# jobs: 
+#   build: 
+#     # runs-on: [ubuntu-latest,build,self-hosted]
+#     runs-on: [self-hosted]
+#     environment: testing
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v3
+
+#       - name: Log in to the Container registry
+#         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+#         with:
+#           registry: ${{ env.REGISTRY }}
+#           username: ${{env.UNAME}}
+#           password: ${{ secrets.GITHUB_TOKEN }}
+
+#       - name: Extract metadata (tags, labels) for Docker
+#         id: meta
+#         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+#         with:
+#           images: ${{ env.REGISTRY }}/${{env.UNAME}}/${{ env.IMAGE_NAME }}
+
+#         # Setting up Docker Buildx with docker-container driver is required
+#         # at the moment to be able to use a subdirectory with Git context
+#       - name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v3
+
+#       - name: Build and push Docker image
+#         uses: docker/build-push-action@v5
+#         with:
+#           push: true
+#           tags: ${{ steps.meta.outputs.tags }}
+#           labels: ${{ steps.meta.outputs.labels }}
+#           build-args: |
+#             DJANGO_SUPERUSER_USERNAME=${{ vars.DJANGO_SUPERUSER_USERNAME }} 
+#             DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
+#             DJANGO_SUPERUSER_EMAIL=${{ vars.DJANGO_SUPERUSER_EMAIL }}
+        
+#       - name: Docker Login
+#         run: docker login -u ${{env.UNAME}} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
+
+#       - name: Docker pull
+#         run: docker pull ${{steps.meta.outputs.tags}}
+        
+#       - name: Docker stop
+#         run: docker stop ${{ env.CONTAINER_NAME }} || echo "no containers found, none stopped"   
+#       - name: Docker rm
+#         run: docker rm ${{ env.CONTAINER_NAME }} || echo "no containers found, none removed"
+#       - name: Docker run
+#         run: docker run -d -p 8080:${{ vars.BACKEND_PORT }} 
+#           -e DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
+#           -e DJANGO_SUPERUSER_EMAIL=${{ vars.DJANGO_SUPERUSER_EMAIL }}
+#           -e DJANGO_SUPERUSER_USERNAME=${{ vars.DJANGO_SUPERUSER_USERNAME }}
+#           -e DB_NAME=${{ vars.DB_NAME }}
+#           -e DB_USER=${{ vars.DB_USER }}
+#           -e DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+#           -e DB_ADDR=${{ vars.DB_ADDR }}
+#           -e DB_PORT=${{ vars.DB_PORT }}
+#           -e DB_ENGINE=${{ vars.DB_ENGINE }}
+#           --restart=always
+#           --name ${{ env.CONTAINER_NAME }} ${{ env.REGISTRY }}/${{env.UNAME}}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
 jobs: 
-  build: 
-    # runs-on: [ubuntu-latest,build,self-hosted]
+  compose:
     runs-on: [self-hosted]
+    environment: testing
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4.2.2
 
-      - name: Log in to the Container registry
-        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{env.UNAME}}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-        with:
-          images: ${{ env.REGISTRY }}/${{env.UNAME}}/${{ env.IMAGE_NAME }}
-
-        # Setting up Docker Buildx with docker-container driver is required
-        # at the moment to be able to use a subdirectory with Git context
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            DJANGO_SUPERUSER_USERNAME=${{ vars.DJANGO_SUPERUSER_USERNAME }} 
-            DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
-            DJANGO_SUPERUSER_EMAIL=${{ vars.DJANGO_SUPERUSER_EMAIL }}
-        
-      - name: Docker Login
-        run: docker login -u ${{env.UNAME}} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
-
-      - name: Docker pull
-        run: docker pull ${{steps.meta.outputs.tags}}
-        
-      - name: Docker stop
-        run: docker stop ${{ env.CONTAINER_NAME }} || echo "no containers found, none stopped"   
-      - name: Docker rm
-        run: docker rm ${{ env.CONTAINER_NAME }} || echo "no containers found, none removed"
-      - name: Docker run
-        run: docker run -d -p 8080:${{ vars.BACKEND_PORT }} 
-          -e DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
-          -e DJANGO_SUPERUSER_EMAIL=${{ vars.DJANGO_SUPERUSER_EMAIL }}
-          -e DJANGO_SUPERUSER_USERNAME=${{ vars.DJANGO_SUPERUSER_USERNAME }}
-          -e DB_NAME=${{ vars.DB_NAME }}
-          -e DB_USER=${{ vars.DB_USER }}
-          -e DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-          -e DB_ADDR=${{ vars.DB_ADDR }}
-          -e DB_PORT=${{ vars.DB_PORT }}
-          -e DB_ENGINE=${{ vars.DB_ENGINE }}
-          --restart=always
-          --name ${{ env.CONTAINER_NAME }} ${{ env.REGISTRY }}/${{env.UNAME}}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+      # - name: Build the Docker image
+      #   run: docker build . --file Dockerfile  --tag ghcr.io/replace-me-org/replace-me-image-name:${{ steps.date.outputs.date }}
+      # - name: Run docker compose
+      #   uses: hoverkraft-tech/compose-action@v2.0.1
+      #   with:
+      #     compose-file: "./docker-compose.yaml"
+      #   env:
+      #     DJANGO_SUPERUSER_USERNAME: ${{ vars.DJANGO_SUPERUSER_USERNAME }} 
+      #     DJANGO_SUPERUSER_PASSWORD: ${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
+      #     DJANGO_SUPERUSER_EMAIL: ${{ vars.DJANGO_SUPERUSER_EMAIL }}
+      #     DB_NAME: ${{ vars.DB_NAME }}
+      #     DB_USER: ${{ vars.DB_USER }}
+      #     DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      #     DB_ADDR: ${{ vars.DB_ADDR }}
+      #     DB_PORT: ${{ vars.DB_PORT }}
+      # #     DB_ENGINE: ${{ vars.DB_ENGINE }}
+      - name: get env file
+        run: ln -s ~/.env .
+      # - name: dbg
+      #   run: echo $USER
+      - name: Execute tests in the running services
+        run: docker compose up

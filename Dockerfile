@@ -25,6 +25,6 @@ RUN python manage.py makemigrations
 RUN python manage.py migrate
 RUN ["python", "manage.py", "collectstatic", "--no-input", "-v 2"]
 RUN python manage.py createsuperuser --noinput
-# ENTRYPOINT gunicorn -c ./config/gunicorn.config.py
+ENTRYPOINT ["gunicorn", "-c ./gunicorn.config.py"]
 
-ENTRYPOINT ["sh", "entrypoint.sh"]
+# ENTRYPOINT ["sh", "entrypoint.sh"]
