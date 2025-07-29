@@ -1,0 +1,41 @@
+name: Test backend
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+    paths:
+      - digi_log_be/digi_log/**
+      - digi_log_be/digilog_backend/**
+      - .github/workflows/test-backend.yml
+  workflow_dispatch:
+concurrency:
+  group: backend-test-${{ github.event.pull_request.number || github.ref_name }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./digi_log_be
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          sudo apt update && sudo apt install -y libldap2-dev libsasl2-dev
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run migrations
+        run: |
+          python manage.py makemigrations
+          python manage.py migrate
+
+      - name: Test with pytest
+        run: |
+          pytest
