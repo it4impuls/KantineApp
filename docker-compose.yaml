@@ -18,3 +18,5 @@ services:
       - ./:/opt/services/djangoapp/src/
     env_file:
       - .env
+    environment:
+      - DEBUG=False    
