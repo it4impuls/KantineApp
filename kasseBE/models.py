@@ -10,7 +10,7 @@ def in4yrs() -> date:
 class User(models.Model):
     firstname = models.CharField(max_length=50)
     lastname = models.CharField(max_length=50)
-    code  = models.CharField(max_length=50)
+    code  = models.CharField(max_length=50, unique=True, primary_key=True)
     active = models.BooleanField()
     enddate = models.DateField(default=in4yrs)
 
