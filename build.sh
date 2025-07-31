@@ -5,10 +5,10 @@ target_dir=$HOME/$dirname
 
 # rm -r "$target_dir"
 mkdir "$target_dir"
-ln -sr "$PWD/"* "$target_dir"
-ln -s $HOME/.env $target_dir/
+cp -rf "$PWD/"* "$target_dir"
+cp -f $HOME/.env $target_dir
 cd "$target_dir"
-ls -a
+# ls -a
 
 # Docker
 docker compose up -d --build
