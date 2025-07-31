@@ -101,5 +101,5 @@ jobs:
         run: docker compose down
       # - name: dbg
       #   run: echo $USER
-      - name: Run now service
+      - name: Run new service
         run: docker compose up -d --build
