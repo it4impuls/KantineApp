@@ -19,8 +19,8 @@ RUN pip install -r requirements.txt && pip install gunicorn
 
 EXPOSE 80
 
-RUN python manage.py makemigrations
-RUN python manage.py migrate
+RUN python manage.py makemigrations --no-input
+RUN python manage.py migrate --no-input
 RUN python manage.py collectstatic --no-input -v 2
 # ignore already existing user
 RUN python manage.py createsuperuser --noinput ; exit 0
