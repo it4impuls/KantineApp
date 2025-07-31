@@ -90,8 +90,16 @@ WSGI_APPLICATION = 'kantineApp.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': "django.db.backends."+environ.get("DB_ENGINE", 'sqlite3'), 
+        'NAME': environ.get("DB_NAME", 'kursplan.sqlite3'),
+        'USER': environ.get("DB_USER", 'root'),
+        'PASSWORD': environ.get("DB_PASSWORD", 'root'),
+        'HOST': environ.get("DB_ADDR", '127.0.0.1'),
+        'PORT': environ.get("DB_PORT", '3306'),
+        'TEST': {
+            # 'MIRROR': 'default',
+            'NAME': 'mytestdatabase',
+        }
     }
 }
 
