@@ -1,11 +1,12 @@
 #! /bin/bash
+set -x
 dirname=${PWD##*/}
 target_dir=$HOME/$dirname
 
-echo mkdir "$target_dir"
-echo ln -s "$PWD/*" "$target_dir/*"
-echo ln -s $HOME/.env $target_dir/
-echo cd "$target_dir"
+mkdir "$target_dir"
+ln -s "$PWD/*" "$target_dir/*"
+ln -s $HOME/.env $target_dir/
+cd "$target_dir"
 
 # Docker
-echo docker compose up -d --build
+docker compose up -d --build
