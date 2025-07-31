@@ -5,7 +5,7 @@ from dateutil.relativedelta import relativedelta
 # Create your models here.
 
 def in4yrs() -> date:
-    return localdate(now() + relativedelta(years=4))
+    return now() + relativedelta(years=4)
 
 class User(models.Model):
     firstname = models.CharField(max_length=50)
