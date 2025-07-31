@@ -22,7 +22,8 @@ EXPOSE 80
 RUN python manage.py makemigrations
 RUN python manage.py migrate
 RUN python manage.py collectstatic --no-input -v 2
-RUN python manage.py createsuperuser --noinput
+# ignore already existing user
+RUN python manage.py createsuperuser --noinput ; exit 0
 ENTRYPOINT gunicorn -c gunicorn.config.py
 # ENTRYPOINT gunicorn --bind 0.0.0.0:8080 kantineApp.wsgi:application
 
