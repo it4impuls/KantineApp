@@ -24,7 +24,8 @@ RUN python manage.py migrate
 RUN python manage.py collectstatic --no-input -v 2
 # ignore already existing user
 RUN python manage.py createsuperuser --noinput ; exit 0
-ENTRYPOINT gunicorn -c gunicorn.config.py
+ENTRYPOINT python manage.py runserver 
+# ENTRYPOINT gunicorn -c gunicorn.config.py
 # ENTRYPOINT gunicorn --bind 0.0.0.0:8080 kantineApp.wsgi:application
 
 # ENTRYPOINT ["sh", "entrypoint.sh"]
