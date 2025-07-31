@@ -96,10 +96,4 @@ jobs:
       #     DB_PORT: ${{ vars.DB_PORT }}
       # #     DB_ENGINE: ${{ vars.DB_ENGINE }}
       - name: get env file
-        run: ln -s ~/.env .
-      - name: Stop old service
-        run: docker compose down
-      # - name: dbg
-      #   run: echo $USER
-      - name: Run new service
-        run: docker compose up -d --build
+        run: build.sh
