@@ -7,6 +7,7 @@ mkdir "$target_dir"
 ln -s "$PWD/*" "$target_dir/*"
 ln -s $HOME/.env $target_dir/
 cd "$target_dir"
+ls -a
 
 # Docker
 docker compose up -d --build
