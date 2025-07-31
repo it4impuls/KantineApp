@@ -95,5 +95,5 @@ jobs:
       #     DB_ADDR: ${{ vars.DB_ADDR }}
       #     DB_PORT: ${{ vars.DB_PORT }}
       # #     DB_ENGINE: ${{ vars.DB_ENGINE }}
-      - name: get env file
-        run: build.sh
+      - name: run build&run script
+        run: ./build.sh
