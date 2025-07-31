@@ -26,6 +26,11 @@ SECRET_KEY = 'django-insecure-9@e#u@ku@*$_y@1o80$a0wjohz49t@!q&wotmcfsnw(l+v$!8*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# ALLOWED_HOSTS = []
+if DEBUG:
+    ALLOWED_HOSTS = ["127.0.0.1"]
+else:
+    ALLOWED_HOSTS = ["kantinekasse"]
 # ALLOWED_HOSTS = ['0.0.0.0']
 
 
