@@ -1,0 +1,504 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+# Fabian Büchler <fabian@buechler.io>, 2015
+# 5a85a00218ad0559ac6870a4179f4dbc, 2017
+# Lukas Bischofberger <me@worx.li>, 2017
+# Mads Jensen <mje@inducks.org>, 2015
+# Niklas P <contact@niklasplessing.net>, 2015-2016
+# Thomas Tanner, 2015
+# Tom Jaster <futur3.tom@googlemail.com>, 2015
+# Xavier Ordoquy <xordoquy@linovia.com>, 2015
+# stefan6419846, 2025
+msgid ""
+msgstr ""
+"Project-Id-Version: Django REST framework\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-01 13:28+0200\n"
+"PO-Revision-Date: 2025-08-01 13:25+0200\n"
+"Last-Translator: Xavier Ordoquy <xordoquy@linovia.com>\n"
+"Language-Team: German (http://www.transifex.com/django-rest-framework-1/"
+"django-rest-framework/language/de/)\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.0.1\n"
+
+#: kasseBE/models.py:24
+msgid "User is not active"
+msgstr "Der Benutzer ist nicht Aktiv"
+
+#: kasseBE/views.py:32
+msgid "The user already ordered today. "
+msgstr "Der Kunde hat heute bereits bestellt. "
+
+#~ msgid "Invalid basic header. No credentials provided."
+#~ msgstr "Ungültiger Basic Header. Keine Zugangsdaten angegeben."
+
+#~ msgid "Invalid basic header. Credentials string should not contain spaces."
+#~ msgstr ""
+#~ "Ungültiger Basic Header. Zugangsdaten sollen keine Leerzeichen enthalten."
+
+#~ msgid "Invalid basic header. Credentials not correctly base64 encoded."
+#~ msgstr ""
+#~ "Ungültiger Basic Header. Zugangsdaten sind nicht korrekt mit base64 "
+#~ "kodiert."
+
+#~ msgid "Invalid username/password."
+#~ msgstr "Ungültiger Benutzername/Passwort."
+
+#~ msgid "User inactive or deleted."
+#~ msgstr "Benutzer inaktiv oder gelöscht."
+
+#~ msgid "Invalid token header. No credentials provided."
+#~ msgstr "Ungültiger Token Header. Keine Zugangsdaten angegeben."
+
+#~ msgid "Invalid token header. Token string should not contain spaces."
+#~ msgstr ""
+#~ "Ungültiger Token Header. Zugangsdaten sollen keine Leerzeichen enthalten."
+
+#~ msgid ""
+#~ "Invalid token header. Token string should not contain invalid characters."
+#~ msgstr ""
+#~ "Ungültiger Token Header. Zugangsdaten dürfen keine ungültigen Zeichen "
+#~ "enthalten."
+
+#~ msgid "Invalid token."
+#~ msgstr "Ungültiges Token."
+
+#~ msgid "Auth Token"
+#~ msgstr "Auth Token"
+
+#~ msgid "Key"
+#~ msgstr "Schlüssel"
+
+#~ msgid "User"
+#~ msgstr "Benutzer"
+
+#~ msgid "Created"
+#~ msgstr "Erzeugt"
+
+#~ msgid "Token"
+#~ msgstr "Token"
+
+#~ msgid "Tokens"
+#~ msgstr "Tokens"
+
+#~ msgid "Username"
+#~ msgstr "Benutzername"
+
+#~ msgid "Password"
+#~ msgstr "Passwort"
+
+#~ msgid "Unable to log in with provided credentials."
+#~ msgstr "Die angegebenen Zugangsdaten stimmen nicht."
+
+#~ msgid "Must include \"username\" and \"password\"."
+#~ msgstr "\"username\" und \"password\" sind erforderlich."
+
+#~ msgid "A server error occurred."
+#~ msgstr "Ein Serverfehler ist aufgetreten."
+
+#~ msgid "Invalid input."
+#~ msgstr "Ungültige Eingabe."
+
+#~ msgid "Malformed request."
+#~ msgstr "Fehlerhafte Anfrage."
+
+#~ msgid "Incorrect authentication credentials."
+#~ msgstr "Falsche Anmeldedaten."
+
+#~ msgid "Authentication credentials were not provided."
+#~ msgstr "Anmeldedaten fehlen."
+
+#~ msgid "You do not have permission to perform this action."
+#~ msgstr "Sie sind nicht berechtigt, diese Aktion durchzuführen."
+
+#~ msgid "Not found."
+#~ msgstr "Nicht gefunden."
+
+#, python-brace-format
+#~ msgid "Method \"{method}\" not allowed."
+#~ msgstr "Methode \"{method}\" nicht erlaubt."
+
+#~ msgid "Could not satisfy the request Accept header."
+#~ msgstr "Kann die Accept Kopfzeile der Anfrage nicht erfüllen."
+
+#, python-brace-format
+#~ msgid "Unsupported media type \"{media_type}\" in request."
+#~ msgstr "Nicht unterstützter Medientyp \"{media_type}\" in der Anfrage."
+
+#~ msgid "Request was throttled."
+#~ msgstr "Die Anfrage wurde gedrosselt."
+
+#, python-brace-format
+#~ msgid "Expected available in {wait} second."
+#~ msgstr "Erwarte Verfügbarkeit in {wait} Sekunde."
+
+#, python-brace-format
+#~ msgid "Expected available in {wait} seconds."
+#~ msgstr "Erwarte Verfügbarkeit in {wait} Sekunden."
+
+#~ msgid "This field is required."
+#~ msgstr "Dieses Feld ist zwingend erforderlich."
+
+#~ msgid "This field may not be null."
+#~ msgstr "Dieses Feld darf nicht null sein."
+
+#~ msgid "Must be a valid boolean."
+#~ msgstr "Muss ein gültiger Wahrheitswert sein."
+
+#~ msgid "Not a valid string."
+#~ msgstr "Kein gültiger String."
+
+#~ msgid "This field may not be blank."
+#~ msgstr "Dieses Feld darf nicht leer sein."
+
+#, python-brace-format
+#~ msgid "Ensure this field has no more than {max_length} characters."
+#~ msgstr ""
+#~ "Stelle sicher, dass dieses Feld nicht mehr als {max_length} Zeichen lang "
+#~ "ist."
+
+#, python-brace-format
+#~ msgid "Ensure this field has at least {min_length} characters."
+#~ msgstr ""
+#~ "Stelle sicher, dass dieses Feld mindestens {min_length} Zeichen lang ist."
+
+#~ msgid "Enter a valid email address."
+#~ msgstr "Gib eine gültige E-Mail Adresse an."
+
+#~ msgid "This value does not match the required pattern."
+#~ msgstr "Dieser Wert passt nicht zu dem erforderlichen Muster."
+
+#~ msgid ""
+#~ "Enter a valid \"slug\" consisting of letters, numbers, underscores or "
+#~ "hyphens."
+#~ msgstr ""
+#~ "Gib ein gültiges \"slug\" aus Buchstaben, Ziffern, Unterstrichen und "
+#~ "Minuszeichen ein."
+
+#~ msgid ""
+#~ "Enter a valid \"slug\" consisting of Unicode letters, numbers, "
+#~ "underscores, or hyphens."
+#~ msgstr ""
+#~ "Gib ein gültiges \"slug\" aus Unicode-Buchstaben, Ziffern, Unterstrichen "
+#~ "und Minuszeichen ein."
+
+#~ msgid "Enter a valid URL."
+#~ msgstr "Gib eine gültige URL ein."
+
+#~ msgid "Must be a valid UUID."
+#~ msgstr "Muss eine gültige UUID sein."
+
+#~ msgid "Enter a valid IPv4 or IPv6 address."
+#~ msgstr "Geben Sie eine gültige IPv4 oder IPv6 Adresse an."
+
+#~ msgid "A valid integer is required."
+#~ msgstr "Eine gültige Ganzzahl ist erforderlich."
+
+#, python-brace-format
+#~ msgid "Ensure this value is less than or equal to {max_value}."
+#~ msgstr ""
+#~ "Stelle sicher, dass dieser Wert kleiner oder gleich {max_value} ist."
+
+#, python-brace-format
+#~ msgid "Ensure this value is greater than or equal to {min_value}."
+#~ msgstr "Stelle sicher, dass dieser Wert größer oder gleich {min_value} ist."
+
+#~ msgid "String value too large."
+#~ msgstr "Zeichenkette zu lang."
+
+#~ msgid "A valid number is required."
+#~ msgstr "Eine gültige Zahl ist erforderlich."
+
+#, python-brace-format
+#~ msgid "Ensure that there are no more than {max_digits} digits in total."
+#~ msgstr ""
+#~ "Stelle sicher, dass es insgesamt nicht mehr als {max_digits} Ziffern lang "
+#~ "ist."
+
+#, python-brace-format
+#~ msgid ""
+#~ "Ensure that there are no more than {max_decimal_places} decimal places."
+#~ msgstr ""
+#~ "Stelle sicher, dass es nicht mehr als {max_decimal_places} "
+#~ "Nachkommastellen lang ist."
+
+#, python-brace-format
+#~ msgid ""
+#~ "Ensure that there are no more than {max_whole_digits} digits before the "
+#~ "decimal point."
+#~ msgstr ""
+#~ "Stelle sicher, dass es nicht mehr als {max_whole_digits} Stellen vor dem "
+#~ "Komma lang ist."
+
+#, python-brace-format
+#~ msgid ""
+#~ "Datetime has wrong format. Use one of these formats instead: {format}."
+#~ msgstr ""
+#~ "Datums- und Zeitangabe hat das falsche Format. Nutze stattdessen eines "
+#~ "dieser Formate: {format}."
+
+#~ msgid "Expected a datetime but got a date."
+#~ msgstr "Erwarte eine Datums- und Zeitangabe, erhielt aber ein Datum."
+
+#, python-brace-format
+#~ msgid "Invalid datetime for the timezone \"{timezone}\"."
+#~ msgstr "Ungültige Datumsangabe für die Zeitzone \"{timezone}\"."
+
+#~ msgid "Datetime value out of range."
+#~ msgstr "Datumsangabe außerhalb des Bereichs."
+
+#, python-brace-format
+#~ msgid "Date has wrong format. Use one of these formats instead: {format}."
+#~ msgstr ""
+#~ "Datum hat das falsche Format. Nutze stattdessen eines dieser Formate: "
+#~ "{format}."
+
+#~ msgid "Expected a date but got a datetime."
+#~ msgstr "Erwarte ein Datum, erhielt aber eine Datums- und Zeitangabe."
+
+#, python-brace-format
+#~ msgid "Time has wrong format. Use one of these formats instead: {format}."
+#~ msgstr ""
+#~ "Zeitangabe hat das falsche Format. Nutze stattdessen eines dieser "
+#~ "Formate: {format}."
+
+#, python-brace-format
+#~ msgid ""
+#~ "Duration has wrong format. Use one of these formats instead: {format}."
+#~ msgstr ""
+#~ "Laufzeit hat das falsche Format. Benutze stattdessen eines dieser  "
+#~ "Formate {format}."
+
+#, python-brace-format
+#~ msgid "\"{input}\" is not a valid choice."
+#~ msgstr "\"{input}\" ist keine gültige Option."
+
+#, python-brace-format
+#~ msgid "More than {count} items..."
+#~ msgstr "Mehr als {count} Ergebnisse"
+
+#, python-brace-format
+#~ msgid "Expected a list of items but got type \"{input_type}\"."
+#~ msgstr ""
+#~ "Erwarte eine Liste von Elementen, erhielt aber den Typ \"{input_type}\"."
+
+#~ msgid "This selection may not be empty."
+#~ msgstr "Diese Auswahl darf nicht leer sein"
+
+#, python-brace-format
+#~ msgid "\"{input}\" is not a valid path choice."
+#~ msgstr "\"{input}\" ist ein ungültiger Pfad."
+
+#~ msgid "No file was submitted."
+#~ msgstr "Es wurde keine Datei übermittelt."
+
+#~ msgid ""
+#~ "The submitted data was not a file. Check the encoding type on the form."
+#~ msgstr ""
+#~ "Die übermittelten Daten stellen keine Datei dar. Prüfe den Kodierungstyp "
+#~ "im Formular."
+
+#~ msgid "No filename could be determined."
+#~ msgstr "Der Dateiname konnte nicht ermittelt werden."
+
+#~ msgid "The submitted file is empty."
+#~ msgstr "Die übermittelte Datei ist leer."
+
+#, python-brace-format
+#~ msgid ""
+#~ "Ensure this filename has at most {max_length} characters (it has "
+#~ "{length})."
+#~ msgstr ""
+#~ "Stelle sicher, dass dieser Dateiname höchstens {max_length} Zeichen lang "
+#~ "ist (er hat {length})."
+
+#~ msgid ""
+#~ "Upload a valid image. The file you uploaded was either not an image or a "
+#~ "corrupted image."
+#~ msgstr ""
+#~ "Lade ein gültiges Bild hoch. Die hochgeladene Datei ist entweder kein "
+#~ "Bild oder ein beschädigtes Bild."
+
+#~ msgid "This list may not be empty."
+#~ msgstr "Diese Liste darf nicht leer sein."
+
+#, python-brace-format
+#~ msgid "Ensure this field has at least {min_length} elements."
+#~ msgstr "Dieses Feld muss mindestens {min_length} Einträge enthalten."
+
+#, python-brace-format
+#~ msgid "Ensure this field has no more than {max_length} elements."
+#~ msgstr "Dieses Feld darf nicht mehr als {max_length} Einträge enthalten."
+
+#, python-brace-format
+#~ msgid "Expected a dictionary of items but got type \"{input_type}\"."
+#~ msgstr ""
+#~ "Erwartete ein Dictionary mit Elementen, erhielt aber den Typ "
+#~ "\"{input_type}\"."
+
+#~ msgid "This dictionary may not be empty."
+#~ msgstr "Dieses Dictionary darf nicht leer sein."
+
+#~ msgid "Value must be valid JSON."
+#~ msgstr "Wert muss gültiges JSON sein."
+
+#~ msgid "Search"
+#~ msgstr "Suche"
+
+#~ msgid "A search term."
+#~ msgstr "Ein Suchbegriff."
+
+#~ msgid "Ordering"
+#~ msgstr "Sortierung"
+
+#~ msgid "Which field to use when ordering the results."
+#~ msgstr "Feld, das zum Sortieren der Ergebnisse verwendet werden soll."
+
+#~ msgid "ascending"
+#~ msgstr "Aufsteigend"
+
+#~ msgid "descending"
+#~ msgstr "Absteigend"
+
+#~ msgid "A page number within the paginated result set."
+#~ msgstr "Eine Seitenzahl in der paginierten Ergebnismenge."
+
+#~ msgid "Number of results to return per page."
+#~ msgstr "Anzahl der pro Seite zurückzugebenden Ergebnisse."
+
+#~ msgid "Invalid page."
+#~ msgstr "Ungültige Seite."
+
+#~ msgid "The initial index from which to return the results."
+#~ msgstr ""
+#~ "Der initiale Index, von dem die Ergebnisse zurückgegeben werden sollen."
+
+#~ msgid "The pagination cursor value."
+#~ msgstr "Der Zeigerwert für die Paginierung"
+
+#~ msgid "Invalid cursor"
+#~ msgstr "Ungültiger Zeiger"
+
+#, python-brace-format
+#~ msgid "Invalid pk \"{pk_value}\" - object does not exist."
+#~ msgstr "Ungültiger pk \"{pk_value}\" - Object existiert nicht."
+
+#, python-brace-format
+#~ msgid "Incorrect type. Expected pk value, received {data_type}."
+#~ msgstr "Falscher Typ. Erwarte pk-Wert, erhielt aber {data_type}."
+
+#~ msgid "Invalid hyperlink - No URL match."
+#~ msgstr "Ungültiger Hyperlink - entspricht keiner URL."
+
+#~ msgid "Invalid hyperlink - Incorrect URL match."
+#~ msgstr "Ungültiger Hyperlink - URL stimmt nicht überein."
+
+#~ msgid "Invalid hyperlink - Object does not exist."
+#~ msgstr "Ungültiger Hyperlink - Objekt existiert nicht."
+
+#, python-brace-format
+#~ msgid "Incorrect type. Expected URL string, received {data_type}."
+#~ msgstr "Falscher Typ. Erwarte URL-Zeichenkette, erhielt aber {data_type}."
+
+#, python-brace-format
+#~ msgid "Object with {slug_name}={value} does not exist."
+#~ msgstr "Objekt mit {slug_name}={value} existiert nicht."
+
+#~ msgid "Invalid value."
+#~ msgstr "Ungültiger Wert."
+
+#~ msgid "unique integer value"
+#~ msgstr "eindeutiger Ganzzahl-Wert"
+
+#~ msgid "UUID string"
+#~ msgstr "UUID-String"
+
+#~ msgid "unique value"
+#~ msgstr "eindeutiger Wert"
+
+#, python-brace-format
+#~ msgid "A {value_type} identifying this {name}."
+#~ msgstr "Ein {value_type}, der {name} identifiziert."
+
+#, python-brace-format
+#~ msgid "Invalid data. Expected a dictionary, but got {datatype}."
+#~ msgstr "Ungültige Daten. Dictionary erwartet, aber {datatype} erhalten."
+
+#~ msgid "Extra Actions"
+#~ msgstr "Zusätzliche Aktionen"
+
+#~ msgid "Filters"
+#~ msgstr "Filter"
+
+#~ msgid "navbar"
+#~ msgstr "Navigation"
+
+#~ msgid "content"
+#~ msgstr "Inhalt"
+
+#~ msgid "request form"
+#~ msgstr "Anfrage-Formular"
+
+#~ msgid "main content"
+#~ msgstr "Hauptteil"
+
+#~ msgid "request info"
+#~ msgstr "Anfrage-Informationen"
+
+#~ msgid "response info"
+#~ msgstr "Antwort-Informationen"
+
+#~ msgid "None"
+#~ msgstr "Nichts"
+
+#~ msgid "No items to select."
+#~ msgstr "Keine Elemente zum Auswählen."
+
+#~ msgid "This field must be unique."
+#~ msgstr "Dieses Feld muss eindeutig sein."
+
+#, python-brace-format
+#~ msgid "The fields {field_names} must make a unique set."
+#~ msgstr "Die Felder {field_names} müssen eine eindeutige Menge bilden."
+
+#, python-brace-format
+#~ msgid "Surrogate characters are not allowed: U+{code_point:X}."
+#~ msgstr "Ersatzzeichen sind nicht erlaubt: U+{code_point:X}."
+
+#, python-brace-format
+#~ msgid "This field must be unique for the \"{date_field}\" date."
+#~ msgstr ""
+#~ "Dieses Feld muss bezüglich des \"{date_field}\" Datums eindeutig sein."
+
+#, python-brace-format
+#~ msgid "This field must be unique for the \"{date_field}\" month."
+#~ msgstr ""
+#~ "Dieses Feld muss bezüglich des \"{date_field}\" Monats eindeutig sein."
+
+#, python-brace-format
+#~ msgid "This field must be unique for the \"{date_field}\" year."
+#~ msgstr ""
+#~ "Dieses Feld muss bezüglich des \"{date_field}\" Jahrs eindeutig sein."
+
+#~ msgid "Invalid version in \"Accept\" header."
+#~ msgstr "Ungültige Version in der \"Accept\" Kopfzeile."
+
+#~ msgid "Invalid version in URL path."
+#~ msgstr "Ungültige Version im URL-Pfad."
+
+#~ msgid "Invalid version in URL path. Does not match any version namespace."
+#~ msgstr ""
+#~ "Ungültige Version im URL-Pfad. Entspricht keinem Versions-Namensraum."
+
+#~ msgid "Invalid version in hostname."
+#~ msgstr "Ungültige Version im Hostname."
+
+#~ msgid "Invalid version in query parameter."
+#~ msgstr "Ungültige Version im Anfrageparameter."

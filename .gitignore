@@ -5,3 +5,4 @@ __pycache__
 kasseBE/migrations
 static
 migrate.sh
+*.mo

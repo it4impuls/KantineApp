@@ -25,10 +25,11 @@ from django.http.response import HttpResponse, JsonResponse, Http404
 from rest_framework.validators import UniqueForDateValidator
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django.utils.translation import gettext as _
 
 
 class DateValidator(UniqueForDateValidator):
-    message = "der User hat heute bereits bestellt."
+    message = _("The user already ordered today. ")
     def filter_queryset(self, attrs, queryset, field_name, date_field_name):
         return super().filter_queryset(attrs, queryset, field_name, date_field_name)
 

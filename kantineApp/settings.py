@@ -58,7 +58,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware'
 ]
+
 
 CORS_ALLOW_ALL_ORIGINS = True # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
 CORS_ALLOW_CREDENTIALS = True
@@ -132,6 +134,17 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'CET'
 
 USE_I18N = True
+
+
+LANGUAGES = [
+  ['en', 'English'],
+  ['de', 'Deutsch']
+]
+
+
+LOCALE_PATHS = [
+  path.join(BASE_DIR, 'locales')
+]
 
 USE_TZ = False
 

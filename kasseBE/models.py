@@ -3,7 +3,7 @@ from django.utils.timezone import localdate, now
 from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
 from rest_framework import serializers
-# from django.
+from django.utils.translation import gettext as _
 # Create your models here.
 
 
@@ -21,7 +21,7 @@ class User(models.Model):
 
 def is_active(value:User):
     if (not value.active):
-        raise serializers.ValidationError("User is not active")
+        raise serializers.ValidationError(_("User is not active"))
 
 class Order(models.Model):
     class Tax(models.IntegerChoices):
