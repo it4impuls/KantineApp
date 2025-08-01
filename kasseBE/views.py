@@ -22,7 +22,7 @@ from rest_framework import serializers, viewsets
 from django.utils.timezone import localdate, now
 from datetime import date
 from django.http.response import HttpResponse, JsonResponse, Http404
-from rest_framework.validators import UniqueTogetherValidator, UniqueForDateValidator
+from rest_framework.validators import UniqueForDateValidator
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -31,7 +31,6 @@ class DateValidator(UniqueForDateValidator):
     message = "der User hat heute bereits bestellt."
     def filter_queryset(self, attrs, queryset, field_name, date_field_name):
         return super().filter_queryset(attrs, queryset, field_name, date_field_name)
-
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -69,8 +68,9 @@ class UserSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ['firstname', 'lastname', 'code', 'active', 'enddate', "last_ordered"]
+        fields = ['code', "last_ordered"]
     last_ordered = serializers.SerializerMethodField()
+
 
 
 class UserViewSet(viewsets.ModelViewSet):
