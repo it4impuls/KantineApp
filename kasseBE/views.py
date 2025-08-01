@@ -62,15 +62,20 @@ class OrderViewSet(viewsets.ModelViewSet):
 
 class UserSerializer(serializers.ModelSerializer):
     def get_last_ordered(self, obj):
-        data = OrderSerializer(obj.order_set.latest('order_date')).data
-        data.pop("userID")
-        return data
+        if(obj.order_set.all()):
+            data = OrderSerializer(obj.order_set.latest('order_date')).data
+            data.pop("userID")
+            return data
+        else: return None
     
     
     class Meta:
         model = User
-        fields = ['code', "last_ordered"]
+        fields = fields = ['firstname', 'lastname', 'code', 'active', 'last_ordered']
     last_ordered = serializers.SerializerMethodField()
+    firstname = serializers.CharField(write_only=True)
+    lastname = serializers.CharField(write_only=True)
+    # enddate = serializers.DateTimeField(write_only=True)
 
 
 
