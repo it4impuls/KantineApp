@@ -21,8 +21,10 @@ from .models import Order, User
 from rest_framework import serializers, viewsets
 from django.utils.timezone import localdate, now
 from datetime import date
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse, JsonResponse, Http404
 from rest_framework.validators import UniqueTogetherValidator, UniqueForDateValidator
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 
 class DateValidator(UniqueForDateValidator):
@@ -31,23 +33,11 @@ class DateValidator(UniqueForDateValidator):
         return super().filter_queryset(attrs, queryset, field_name, date_field_name)
 
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['firstname', 'lastname', 'code', 'active', 'enddate']
-
-# ViewSets define the view behavior.
-
-
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
 
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ['userID', 'order_date', 'ordered_item', 'tax']
+        fields = ['id','userID', 'order_date', 'ordered_item', 'tax']
         validators = [
             DateValidator(
                 queryset=Order.objects.all(),
@@ -68,3 +58,42 @@ class OrderViewSet(viewsets.ModelViewSet):
     #     model.validate_unique()
     #     super().create(request)
 
+
+
+class UserSerializer(serializers.ModelSerializer):
+    def get_last_ordered(self, obj):
+        data = OrderSerializer(obj.order_set.latest('order_date')).data
+        data.pop("userID")
+        return data
+    
+    
+    class Meta:
+        model = User
+        fields = ['firstname', 'lastname', 'code', 'active', 'enddate', "last_ordered"]
+    last_ordered = serializers.SerializerMethodField()
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    @action(detail=True)
+    def ordered_today(self, request, pk=None):
+        # if( self.get_object().order_set.filter('order_date__year')):
+        #     ...
+
+        obj = self.get_object()
+        date_field_name = 'order_date'
+        filter_kwargs = {}
+        today = now()
+        filter_kwargs['%s__day' % date_field_name] = today.day
+        filter_kwargs['%s__month' % date_field_name] = today.month
+        filter_kwargs['%s__year' % date_field_name] = today.year
+        cal =  obj.order_set.all().filter(**filter_kwargs)
+        response = HttpResponse()
+        if(cal):
+            return Response(OrderSerializer(cal.first()).data)
+        else:
+            return Response({})
+
+    

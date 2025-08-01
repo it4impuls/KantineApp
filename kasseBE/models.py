@@ -20,7 +20,7 @@ class Order(models.Model):
         INHOUSE = 7
 
     
-    order_date = models.DateTimeField(auto_now_add=True)
+    order_date = models.DateTimeField(auto_now=True)
     userID = models.ForeignKey(User, on_delete=models.CASCADE, unique_for_date="order_date")
     ordered_item = models.DecimalField(decimal_places=2, max_digits=6)
     tax = models.IntegerField(choices=Tax)
