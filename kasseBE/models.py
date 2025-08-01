@@ -19,7 +19,6 @@ class Order(models.Model):
         TAKEOUT = 19
         INHOUSE = 7
 
-    
     order_date = models.DateTimeField(auto_now=True)
     userID = models.ForeignKey(User, on_delete=models.CASCADE, unique_for_date="order_date")
     ordered_item = models.DecimalField(decimal_places=2, max_digits=6)

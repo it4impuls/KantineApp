@@ -29,9 +29,9 @@ DEBUG = environ.get("debug", True)
 
 # ALLOWED_HOSTS = []
 if DEBUG:
-    ALLOWED_HOSTS = ["127.0.0.1", "kantinekasse"]
+    ALLOWED_HOSTS = ["127.0.0.1", "kantinekasse", "kantinekasse.impulsreha.local"]
 else:
-    ALLOWED_HOSTS = ["kantinekasse"]
+    ALLOWED_HOSTS = ["kantinekasse", "kantinekasse.impulsreha.local"]
 # ALLOWED_HOSTS = ['0.0.0.0']
 
 
