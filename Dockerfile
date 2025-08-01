@@ -10,7 +10,7 @@ ENV DJANGO_SUPERUSER_EMAIL=$DJANGO_SUPERUSER_EMAIL
 ENV DJANGO_SUPERUSER_USERNAME=$DJANGO_SUPERUSER_USERNAME
 ENV DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD
 
-RUN apt update && apt install -y python3-dev libldap2-dev libsasl2-dev libssl-dev gunicorn default-libmysqlclient-dev build-essential
+RUN apt update && apt install -y python3-dev libldap2-dev libsasl2-dev libssl-dev gunicorn default-libmysqlclient-dev build-essential gettext
 
 RUN mkdir -p $WORKDIR
 WORKDIR $WORKDIR
