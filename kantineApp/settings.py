@@ -69,6 +69,9 @@ CORS_ALLOWED_ORIGINS= CSRF_TRUSTED_ORIGINS = [
     'http://*',
     'https://*'
 ]
+CORS_ALLOWED_ORIGIN_REGEXES = CSRF_TRUSTED_ORIGINS_REGEXES = [
+    r"^http://\w+\..+$",
+]
 
 ROOT_URLCONF = 'kantineApp.urls'
 
