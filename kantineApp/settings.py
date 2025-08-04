@@ -65,10 +65,10 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
 CORS_ALLOW_CREDENTIALS = True
-# CORS_ALLOWED_ORIGINS= CSRF_TRUSTED_ORIGINS = [
-#     'http://127.0.0.1:8000',
-#     'https://127.0.0.1'
-# ]
+CORS_ALLOWED_ORIGINS= CSRF_TRUSTED_ORIGINS = [
+    'http://*',
+    'https://*'
+]
 
 ROOT_URLCONF = 'kantineApp.urls'
 
