@@ -3,4 +3,4 @@ djangorestframework
 django-cors-headers
 python-dateutil
 mysqlclient
-django-cors-headers
+python-barcode

@@ -16,7 +16,7 @@ class User(models.Model):
     firstname = models.CharField(max_length=50)
     lastname = models.CharField(max_length=50)
     code  = models.CharField(max_length=50, unique=True, primary_key=True)
-    active = models.BooleanField()
+    active = models.BooleanField(default=True)
     enddate = models.DateField(default=in4yrs)
 
 def is_active(value:User):

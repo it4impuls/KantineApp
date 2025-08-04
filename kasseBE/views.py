@@ -21,12 +21,21 @@ from .models import Order, User
 from rest_framework import serializers, viewsets
 from django.utils.timezone import localdate, now
 from datetime import date
-from django.http.response import HttpResponse, JsonResponse, Http404
+from io import BytesIO
+from barcode import EAN13, EAN8
+from barcode.writer import SVGWriter
+from django.http.response import HttpResponse, JsonResponse, Http404, FileResponse
 from rest_framework.validators import UniqueForDateValidator, qs_exists, ValidationError
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.utils.translation import gettext as _
 
+@action(detail=True, methods=["GET"])
+def get_barcode(pk=None) -> BytesIO:
+    rv = BytesIO()
+    EAN8("0"*(7-len(pk))+pk, writer=SVGWriter()).write(rv)
+    return rv
+    
 
 def ordered_today(self, pk):
     # if( self.get_object().order_set.filter('order_date__year')):
@@ -99,7 +108,7 @@ class OrderViewSet(viewsets.ModelViewSet):
     #     self.perform_create(serializer)
     #     headers = self.get_success_headers(serializer.data)
     #     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
+    
 
 class UserSerializer(serializers.ModelSerializer):
     def get_last_ordered(self, obj):
@@ -118,17 +127,21 @@ class UserSerializer(serializers.ModelSerializer):
     lastname = serializers.CharField(write_only=True)
     # enddate = serializers.DateTimeField(write_only=True)
 
+   
 
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+    @action(detail=True, methods=["GET"])
+    def barcode(self,request, pk=None):
+        rv = get_barcode(pk)
+        rv.seek(0)
+        return FileResponse(rv, filename=pk+".svg", as_attachment=False)
+
     @action(detail=True)
     def ordered_today(self, request, pk=None):
-        # if( self.get_object().order_set.filter('order_date__year')):
-        #     ...
-
         obj = self.get_object()
         date_field_name = 'order_date'
         filter_kwargs = {}
