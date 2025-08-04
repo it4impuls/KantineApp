@@ -22,17 +22,53 @@ from rest_framework import serializers, viewsets
 from django.utils.timezone import localdate, now
 from datetime import date
 from django.http.response import HttpResponse, JsonResponse, Http404
-from rest_framework.validators import UniqueForDateValidator
+from rest_framework.validators import UniqueForDateValidator, qs_exists, ValidationError
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.utils.translation import gettext as _
 
 
+def ordered_today(self, pk):
+    # if( self.get_object().order_set.filter('order_date__year')):
+    #     ...
+
+    obj = User.objects.get(id=pk)
+    date_field_name = 'order_date'
+    filter_kwargs = {}
+    today = now()
+    filter_kwargs['%s__day' % date_field_name] = today.day
+    filter_kwargs['%s__month' % date_field_name] = today.month
+    filter_kwargs['%s__year' % date_field_name] = today.year
+    cal =  obj.order_set.all().filter(**filter_kwargs)
+    if(cal):
+        OrderSerializer(cal.first()).data
+    else:
+        return {}
+
 class DateValidator(UniqueForDateValidator):
     message = _("The user already ordered today. ")
     def filter_queryset(self, attrs, queryset, field_name, date_field_name):
-        return super().filter_queryset(attrs, queryset, field_name, date_field_name)
+        ret = super().filter_queryset(attrs, queryset, field_name, date_field_name)
+        if(ret):
+            self.message = _(str(self.message.format(order=OrderSerializer(ret[0]).data)))
+        return ret
 
+    def __call__(self, attrs, serializer):
+        # Determine the underlying model field names. These may not be the
+        # same as the serializer field names if `source=<>` is set.
+        field_name = serializer.fields[self.field].source_attrs[-1]
+        date_field_name = serializer.fields[self.date_field].source_attrs[-1]
+
+        self.enforce_required_fields(attrs)
+        queryset = self.queryset
+        queryset = self.filter_queryset(attrs, queryset, field_name, date_field_name)
+        queryset = self.exclude_current_instance(attrs, queryset, serializer.instance)
+        if qs_exists(queryset):
+            message = self.message.format(date_field=self.date_field)
+            raise ValidationError({
+                self.field: message,
+                "order": OrderSerializer(queryset.first()).data
+            }, code='unique')
 
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
@@ -46,6 +82,7 @@ class OrderSerializer(serializers.ModelSerializer):
         ]
     order_date = serializers.DateTimeField(read_only=True, default=now)
 
+
     
 # ViewSets define the view behavior.
 
@@ -54,10 +91,14 @@ class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     # def create(self, request):
-    #     today = localdate(now())
-    #     model.validate_unique()
-    #     super().create(request)
-
+    #     serializer = self.get_serializer(data=request.data)
+    #     try:
+    #         serializer.is_valid(raise_exception=True)
+    #     except Exception as e:
+    #         response = self.handle_exception(e)
+    #     self.perform_create(serializer)
+    #     headers = self.get_success_headers(serializer.data)
+    #     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class UserSerializer(serializers.ModelSerializer):
