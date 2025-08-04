@@ -49,8 +49,8 @@ class DateValidator(UniqueForDateValidator):
     message = _("The user already ordered today. ")
     def filter_queryset(self, attrs, queryset, field_name, date_field_name):
         ret = super().filter_queryset(attrs, queryset, field_name, date_field_name)
-        if(ret):
-            self.message = _(str(self.message.format(order=OrderSerializer(ret[0]).data)))
+        # if(ret):
+        #     self.message = _(str(self.message.format(order=OrderHyperlinkSerializer(ret[0]).data)))
         return ret
 
     def __call__(self, attrs, serializer):
@@ -67,7 +67,7 @@ class DateValidator(UniqueForDateValidator):
             message = self.message.format(date_field=self.date_field)
             raise ValidationError({
                 self.field: message,
-                "order": OrderSerializer(queryset.first()).data
+                "order":  OrderHyperlinkSerializer(queryset.first(), context={'request': None}).data
             }, code='unique')
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -82,7 +82,7 @@ class OrderSerializer(serializers.ModelSerializer):
         ]
     order_date = serializers.DateTimeField(read_only=True, default=now)
 
-
+serializers.HyperlinkedModelSerializer()
     
 # ViewSets define the view behavior.
 
@@ -143,4 +143,14 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             return Response({})
 
-    
+class OrderHyperlinkSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Order
+        fields = ['url','userID', 'order_date', 'ordered_item', 'tax']
+        validators = [
+            DateValidator(
+                queryset=Order.objects.all(),
+                field='userID', date_field='order_date'
+            )
+        ]
+    order_date = serializers.DateTimeField(read_only=True, default=now)
