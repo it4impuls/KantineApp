@@ -19,21 +19,24 @@ Including another URLconf
 
 from .models import Order, User
 from rest_framework import serializers, viewsets
-from django.utils.timezone import localdate, now
-from datetime import date
+from django.utils.timezone import now
 from io import BytesIO
-from barcode import EAN13, EAN8
+from barcode import Code128
 from barcode.writer import SVGWriter
-from django.http.response import HttpResponse, JsonResponse, Http404, FileResponse
+from django.http.response import HttpResponse,  FileResponse
 from rest_framework.validators import UniqueForDateValidator, qs_exists, ValidationError
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.utils.translation import gettext as _
+from django.shortcuts import get_object_or_404
 
 @action(detail=True, methods=["GET"])
 def get_barcode(pk=None) -> BytesIO:
+    
+    # if(not obj):
+    #     raise
     rv = BytesIO()
-    EAN8("0"*(7-len(pk))+pk, writer=SVGWriter()).write(rv)
+    Code128("0"*(Code128.digits-len(pk))+pk, writer=SVGWriter()).write(rv)
     return rv
     
 
@@ -41,7 +44,7 @@ def ordered_today(self, pk):
     # if( self.get_object().order_set.filter('order_date__year')):
     #     ...
 
-    obj = User.objects.get(id=pk)
+    obj = get_object_or_404(User, code=pk)
     date_field_name = 'order_date'
     filter_kwargs = {}
     today = now()
@@ -136,6 +139,10 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["GET"])
     def barcode(self,request, pk=None):
+        try:    # make sure user actually exists
+            get_object_or_404(User, code=pk)
+        except Exception as e:
+            return self.handle_exception(e)
         rv = get_barcode(pk)
         rv.seek(0)
         return FileResponse(rv, filename=pk+".svg", as_attachment=False)
