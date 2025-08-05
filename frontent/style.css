@@ -1,0 +1,19 @@
+
+ body {
+  background-color: aliceblue;
+  font-family: verdana, arial;
+}
+
+ div.spalten{
+   float:left;	
+   margin-right: 100px;
+}
+
+input[type="radio"] {
+            transform: scale(2);     /* Vergrößert den Button */
+             }
+
+.button {
+    transform: scale(2);
+    margin-left: 50px;
+}
