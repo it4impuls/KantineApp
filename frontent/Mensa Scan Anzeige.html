@@ -11,7 +11,32 @@
 <script>
     document.addEventListener("click",()=>{document.getElementById("userID").focus();})
     const url = "http://kantinekasse"
-    //hallo
+    
+    window.onload = function(){
+    preise = ["3.00", "3.50", "4.50", "6.00", "6.50",  "6.90", "7.00", "7.50", "7.90", "8.50"]
+    
+    form = document.getElementById("menus")
+    console.log(form)
+    preise.forEach(preis => {
+      console.log(preis)
+      label = document.createElement("label")
+      input = document.createElement("input")
+      input.name="ordered_item"
+      input.id="menu_"+preis
+      input.value=preis
+      input.type="radio"
+      input.classList.add("menuinput")
+      // input.style.display = "none"
+      
+      label.innerHTML = preis + "€"
+      label.name="menulabel"
+      label.classList.add("menulabel")
+      
+      form.appendChild(label)
+      label.appendChild(input)
+    });
+  }
+ 
 </script>
 
 <body>
@@ -25,52 +50,7 @@
         <!-- ordered_item Checkbox -->
       
 
-      <div class="spalten">
-
-        <label for="ordered_item" >3,00€</label>
-        <input type="radio" id="ordered_item1" name="ordered_item" value="3.00">
-        <br><br>
-
-        <label for="ordered_item">3,50€</label>
-        <input type="radio" id="ordered_item2" name="ordered_item" value="3.50">
-        <br><br>
-
-        <label for="ordered_item">4,50€</label>
-        <input type="radio" id="ordered_item3" name="ordered_item" value="4.50">
-        <br><br>
-
-        <label for="ordered_item">6,00€</label>
-        <input type="radio" id="ordered_item4" name="ordered_item" value="6.00">
-        <br><br>
-
-        <label for="ordered_item">6,50€</label>
-        <input type="radio" id="ordered_item5" name="ordered_item" value="6.50">
-     
-     </div>
-
-
-     <div>   
-
-        <label for="ordered_item">6,90€</label>
-        <input type="radio" id="ordered_item6" name="ordered_item" value="6.90" >
-        <br><br>
-            
-        <label for="ordered_item">7,00€</label>
-        <input type="radio" id="ordered_item7" name="ordered_item" value="7.00" >
-        <br><br>
-        
-        <label for="ordered_item">7,50€</label>
-        <input type="radio" id="ordered_item8" name="ordered_item" value="7.50">
-        <br><br>
-              
-        <label for="ordered_item">7,90€</label>
-        <input type="radio" id="ordered_item9" name="ordered_item" value="7.90" >
-        <br><br>
-
-        <label for="ordered_item">8,50€</label>
-        <input type="radio" id="ordered_item10" name="ordered_item" value="8.50">
-
-     </div> 
+      <div id="menus"></div>
 
         <br><br><br>
 

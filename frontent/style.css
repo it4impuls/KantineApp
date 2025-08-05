@@ -17,3 +17,22 @@ input[type="radio"] {
     transform: scale(2);
     margin-left: 50px;
 }
+
+.menulabel {
+  width: 50px;
+  height: 50px;
+  display:inline-block;
+  background-color: plum;
+  margin: 2px;
+  align-content: center;
+}
+
+.menulabel:has(input[type="radio"]:checked) {
+  background:pink !important;
+  background-color: red;
+  border: 1px;
+}
+
+.menuinput {
+  display: none;
+}
