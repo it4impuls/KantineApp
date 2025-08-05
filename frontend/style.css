@@ -55,7 +55,6 @@ body {
 .footer {
   display: flex;
   align-items: center;
-  position: relative;
   bottom: 10%;
   width: 40%;
   flex-direction: column;
