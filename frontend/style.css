@@ -30,7 +30,7 @@ body {
 }
 
 .menulabel {
-  flex-basis: 40%;
+  flex-basis: 40%; /* zwischen 33.3% und 50%, damit genau 2 reihen generiert werden. */
   background-color: #76C1C3;
   
   
