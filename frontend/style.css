@@ -78,8 +78,8 @@ textarea:focus, input:focus{
   height: 11vh;
   font-size:calc(12px + 7vh);
   min-height: 30px;
-  border-radius: 15px;
-  margin: 1px;
+  border-radius: 4vh;
+  margin: 0.1%;
   text-align: center;
   flex-grow: 1;
   
