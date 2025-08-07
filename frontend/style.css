@@ -1,21 +1,11 @@
-/* palette from color.adobe.com 
-  #548D95 
-  #76C1C3
-  #AE7F21
-  #F0AE44
-  #789342
-  #B4DB6F
-  */
+colors{
+  color: #548D95 #76C1C3 #AE7F21 #F0AE44 #789342 #B4DB6F
+}
 
 form {
   display: flex;
   flex-direction: column;
-  width: 100%;
   align-items: center;
-}
-html{
-  height: 90%
-
 }
 
 body {
@@ -28,26 +18,16 @@ body {
   flex-direction: column;
 }
 
- div.spalten{
-   float:left;	
-   margin-right: 100px;
-}
-
 .userID {
   margin: 1%;
 }
 
 .menulabel {
-  width: 49%;
-  height: 11vh;
-  display:flex;
-  flex-wrap: wrap;
-  flex-direction: column;
+  width: 49.5%;
+  
   background-color: #76C1C3;
-  margin: 1px;
-  align-items: center;
-  font-size:calc(12px + 7vh);
-  min-height: 30px;
+  
+  
 }
 
 .menulabel:has(input[type="radio"]:checked) {
@@ -57,24 +37,51 @@ body {
 
 }
 
-.menuinput {
+.footer {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  align-self: center;
+  width: fit-content;
+  margin: 1%;
+  width: 100%;
+}
+
+.tax {
+  width: 33%;
+  background-color: #F0AE44
+}
+
+.tax:has(input[type="radio"]:checked) {
+  background:#AE7F21 !important;
+}
+
+.input_invis {
   width: 0px;
   height: 0px;
   position: fixed;
 }
 
-.footer {
-  display: grid;
-  align-items: center;
-  bottom: 10%;
+.btn {
+  height: 11vh;
+  font-size:calc(12px + 7vh);
+  min-height: 30px;
+  border-radius: 15px;
+  margin: 1px;
+  display:flex;
   flex-direction: column;
-  align-self: center;
-  width: fit-content;
+  align-items: center;
+  /* width: ; */
+}
+
+.submit {
+  width: 33%;
+  background-color: #789342;
 }
 
 .menus {
-  width: 80%;
   height: 80%;
+  width: 100%;
   display:flex;
   flex-wrap: wrap;
   flex-direction: row;

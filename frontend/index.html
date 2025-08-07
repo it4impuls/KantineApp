@@ -26,13 +26,14 @@
             input.id = "menu_" + preis
             input.value = preis
             input.type = "radio"
-            input.classList.add("menuinput")
+            input.classList.add("input_invis")
             input.required = true
             // input.style.display = "none"
 
             label.innerHTML = preis + "€"
             label.name = "menulabel"
             label.classList.add("menulabel")
+            label.classList.add("btn")
 
             form.appendChild(label)
             label.appendChild(input)
@@ -46,8 +47,11 @@
     <h1>Mensa Menü</h1>
     <form id="form">
         <!-- Text Input -->
-        <label for="userID">ID-Nummer:</label>
-        <input type="text" id="userID" name="userID" class="userID" required autofocus>
+        <label>
+            ID-Nummer:
+            <input type="text" id="userID" name="userID" class="userID" required autofocus>
+        </label>
+        
         <br><br><br>
 
 
@@ -59,17 +63,17 @@
 
         <div class="footer">
 
-            <label>Hier essen (7% Steuer)
-                <input type="radio" name="tax" value="7" checked>
+            <label class="btn tax">7%
+                <input type="radio" name="tax" value="7" class="input_invis" checked>
             </label>
 
 
 
-            <label>Mitnehmen (19% Steuer)
-                <input type="radio" name="tax" value="19">
+            <label class="btn tax">19%
+                <input type="radio" name="tax" value="19" class="input_invis">
             </label>
             <!-- Submit Button -->
-            <button type='submit' class="button">Bestätigen</button>
+            <button type='submit' class="submit btn">Bestätigen</button>
         </div>
 
 
