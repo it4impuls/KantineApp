@@ -21,7 +21,7 @@ class User(models.Model):
 
 def is_active(value:User):
     if (not value.active):
-        raise serializers.ValidationError(_("User is not active"))
+        raise serializers.ValidationError( "Der Benutzer ist nicht Aktiv")# _("User is not active"))
 
 class Order(models.Model):
     class Tax(models.IntegerChoices):

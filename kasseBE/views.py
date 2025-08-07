@@ -59,6 +59,7 @@ def ordered_today(self, pk):
 
 class DateValidator(UniqueForDateValidator):
     message = _("The user already ordered today. ")
+    message = "Der Kunde hat heute bereits bestellt."
     def filter_queryset(self, attrs, queryset, field_name, date_field_name):
         ret = super().filter_queryset(attrs, queryset, field_name, date_field_name)
         # if(ret):

@@ -2,11 +2,10 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
-
 #: kasseBE/models.py:24
 msgid "User is not active"
 msgstr "Der Benutzer ist nicht Aktiv"
 
-#: kasseBE/views.py:32
+#: kasseBE/views.py:61
 msgid "The user already ordered today. "
 msgstr "Der Kunde hat heute bereits bestellt. "
