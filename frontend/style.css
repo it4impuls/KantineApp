@@ -1,12 +1,17 @@
+/* palette from color.adobe.com 
+  #548D95 
+  #76C1C3
+  #AE7F21
+  #F0AE44
+  #789342
+  #B4DB6F
+  */
 
 form {
-  /* height: inherit; */
   display: flex;
   flex-direction: column;
-  height: inherit;
   width: 100%;
   align-items: center;
-  /* align-self: center; */
 }
 html{
   height: 90%
@@ -34,37 +39,37 @@ body {
 
 .menulabel {
   width: 49%;
-  height: 10vh;
+  height: 11vh;
   display:flex;
   flex-wrap: wrap;
   flex-direction: column;
-  background-color: plum;
-  margin: 0.2%;
+  background-color: #76C1C3;
+  margin: 1px;
   align-items: center;
-  font-size: 8vh;
-  min-height: 8vh;
+  font-size:calc(12px + 7vh);
+  min-height: 30px;
 }
 
 .menulabel:has(input[type="radio"]:checked) {
-  background:pink !important;
-  background-color: red;
+  background:#548D95 !important;
   border: 5%;
   border-color: black;
 
 }
 
 .menuinput {
-  display: none;
-  
+  width: 0px;
+  height: 0px;
+  position: fixed;
 }
 
 .footer {
-  display: flex;
+  display: grid;
   align-items: center;
   bottom: 10%;
-  width: 40%;
   flex-direction: column;
   align-self: center;
+  width: fit-content;
 }
 
 .menus {
