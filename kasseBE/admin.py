@@ -24,7 +24,7 @@ class UserAdmin(admin.ModelAdmin):
     
     @admin.display(description="barcode")
     def barcode(self, obj):
-        html = format_html('<img src="{}/{}/{}" />', "users", obj.pk, "barcode")
+        html = format_html('<img src="/{}/{}/{}" />', "users", obj.pk, "barcode")
         print(html)
         return html
         bc = get_barcode(obj.pk)
