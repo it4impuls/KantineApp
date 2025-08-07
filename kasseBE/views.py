@@ -32,18 +32,12 @@ from django.shortcuts import get_object_or_404
 
 @action(detail=True, methods=["GET"])
 def get_barcode(pk=None) -> BytesIO:
-    
-    # if(not obj):
-    #     raise
     rv = BytesIO()
     Code128("0"*(Code128.digits-len(pk))+pk, writer=SVGWriter()).write(rv)
     return rv
     
 
 def ordered_today(self, pk):
-    # if( self.get_object().order_set.filter('order_date__year')):
-    #     ...
-
     obj = get_object_or_404(User, code=pk)
     date_field_name = 'order_date'
     filter_kwargs = {}
@@ -62,8 +56,6 @@ class DateValidator(UniqueForDateValidator):
     message = "Der Kunde hat heute bereits bestellt."
     def filter_queryset(self, attrs, queryset, field_name, date_field_name):
         ret = super().filter_queryset(attrs, queryset, field_name, date_field_name)
-        # if(ret):
-        #     self.message = _(str(self.message.format(order=OrderHyperlinkSerializer(ret[0]).data)))
         return ret
 
     def __call__(self, attrs, serializer):
@@ -94,24 +86,11 @@ class OrderSerializer(serializers.ModelSerializer):
             )
         ]
     order_date = serializers.DateTimeField(read_only=True, default=now)
-
-serializers.HyperlinkedModelSerializer()
     
-# ViewSets define the view behavior.
-
 
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    # def create(self, request):
-    #     serializer = self.get_serializer(data=request.data)
-    #     try:
-    #         serializer.is_valid(raise_exception=True)
-    #     except Exception as e:
-    #         response = self.handle_exception(e)
-    #     self.perform_create(serializer)
-    #     headers = self.get_success_headers(serializer.data)
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
     
 
 class UserSerializer(serializers.ModelSerializer):

@@ -1,12 +1,9 @@
 from django.db import models
 from django.utils.timezone import localdate, now
-from datetime import datetime, timedelta, date
+from datetime import date
 from dateutil.relativedelta import relativedelta
 from rest_framework import serializers
 from django.utils.translation import gettext as _
-# Create your models here.
-
-
 
 
 def in4yrs() -> date:

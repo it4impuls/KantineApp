@@ -18,17 +18,7 @@ class UserAdmin(admin.ModelAdmin):
     search_fields = ["firstname", "lastname", "code", "active",]
     list_display = ["firstname", "lastname", "code", "active", "enddate" ]
     readonly_fields = ["barcode"]
-    # fields = [barcode]
-    # list_display = []
-    # list_display = ["barcode"]
     
     @admin.display(description="barcode")
     def barcode(self, obj):
-        html = format_html('<img src="/{}/{}/{}" />', "users", obj.pk, "barcode")
-        print(html)
-        return html
-        bc = get_barcode(obj.pk)
-        bc.seek(0)
-        return bc
-
-# admin.site.register(UserAdmin)
+        return format_html('<img src="/{}/{}/{}" />', "users", obj.pk, "barcode")
