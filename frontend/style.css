@@ -19,12 +19,16 @@ body {
   flex-direction: column;
 }
 
-.userID {
-  margin: 1%;
+.l_UID{
+  display: flex;
+  width: 100%;
+}
+
+.I_UID {
   font-size:calc(12px + 6vh);
   width: inherit;
   min-height: 12;
-  margin: 1px;
+  margin: 1%;
   flex-grow: 1;
   flex-basis: 100px;
 }
@@ -52,13 +56,11 @@ textarea:focus, input:focus{
   align-items: center;
   flex-direction: row;
   align-self: center;
-  /* width: fit-content; */
   margin: 1%;
   width: 100%;
 }
 
 .tax {
-  /* width: 33%; */
   background-color: #F0AE44
 }
 
@@ -83,15 +85,9 @@ textarea:focus, input:focus{
   
 }
 
-.l_Uid{
-  display: flex;
-  width: 100%;
-  text-align: left;
-  margin-bottom: 1%;
-}
+
 
 .submit {
-  /* width: 33%; */
   background-color: #789342;
 }
 
