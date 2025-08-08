@@ -28,17 +28,57 @@ from rest_framework.validators import UniqueForDateValidator, qs_exists, Validat
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.utils.translation import gettext as _
-from django.shortcuts import get_object_or_404
-# from django.core.
+from django.shortcuts import get_object_or_404, render
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django import forms
+from csv import DictReader
 
-# @action(detail=True, methods=["GET"])
+
+class UploadFileForm(forms.Form):
+    file = forms.FileField()
+
+
 def get_barcode(pk) -> BytesIO:
     writer = SVGWriter()
-    options={"module_width":0.2, "module_height":3,"text_distance":2, "font_size":6}
+    options = {"module_width": 0.2, "module_height": 3,
+               "text_distance": 2, "font_size": 6}
     rv = BytesIO()
-    Code128("0"*(Code128.digits-len(pk))+pk, writer=writer).write(rv, options=options)
+    Code128("0"*(Code128.digits-len(pk))+pk,
+            writer=writer).write(rv, options=options)
     return rv
-    
+
+
+def handle_uploaded_file(f: InMemoryUploadedFile):
+    file = f.read().decode('utf-8').split("\n")
+    ret = {"added": [], "duplicate": []}
+    for line in DictReader(file, delimiter=",", fieldnames=["firstname", "lastname"]):
+        print(line)
+        existing = User.objects.all().filter(**line)
+        if (existing):
+            ret['duplicate'].append(line)
+            continue
+        u = User(**line)
+        line["code"] = u.code
+        u.save()
+        ret["added"].append(", ".join(line.values()))
+    return ret
+
+
+def add_users_from_file(request):
+    if request.method == "POST":
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            try:
+                ret = handle_uploaded_file(request.FILES["file"])
+            except TypeError as e:
+                return HttpResponse(str(e) + ". Invalid format? file must have 2 columns seperated by a comma: firstname and lastname")
+            except Exception as e:
+                return HttpResponse(e)
+            return HttpResponse("<br>".join(("added: " + ", ".join(ret["added"]), "duplicate: "+", ".join([" ".join((val.values())) for val in ret["duplicate"]]))))
+    else:
+        form = UploadFileForm()
+    return render(request, "kasseBE/add_users.html", {"form": form})
+
 
 def ordered_today(self, pk):
     obj = get_object_or_404(User, code=pk)
@@ -48,15 +88,17 @@ def ordered_today(self, pk):
     filter_kwargs['%s__day' % date_field_name] = today.day
     filter_kwargs['%s__month' % date_field_name] = today.month
     filter_kwargs['%s__year' % date_field_name] = today.year
-    cal =  obj.order_set.all().filter(**filter_kwargs)
-    if(cal):
+    cal = obj.order_set.all().filter(**filter_kwargs)
+    if (cal):
         OrderSerializer(cal.first()).data
     else:
         return {}
 
+
 class DateValidator(UniqueForDateValidator):
     message = _("The user already ordered today. ")
     message = "Der Kunde hat heute bereits bestellt."
+
     def filter_queryset(self, attrs, queryset, field_name, date_field_name):
         ret = super().filter_queryset(attrs, queryset, field_name, date_field_name)
         return ret
@@ -69,8 +111,10 @@ class DateValidator(UniqueForDateValidator):
 
         self.enforce_required_fields(attrs)
         queryset = self.queryset
-        queryset = self.filter_queryset(attrs, queryset, field_name, date_field_name)
-        queryset = self.exclude_current_instance(attrs, queryset, serializer.instance)
+        queryset = self.filter_queryset(
+            attrs, queryset, field_name, date_field_name)
+        queryset = self.exclude_current_instance(
+            attrs, queryset, serializer.instance)
         if qs_exists(queryset):
             message = self.message.format(date_field=self.date_field)
             raise ValidationError({
@@ -78,10 +122,11 @@ class DateValidator(UniqueForDateValidator):
                 "order":  OrderHyperlinkSerializer(queryset.first(), context={'request': None}).data
             }, code='unique')
 
+
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ['id','userID', 'order_date', 'ordered_item', 'tax']
+        fields = ['id', 'userID', 'order_date', 'ordered_item', 'tax']
         validators = [
             DateValidator(
                 queryset=Order.objects.all(),
@@ -89,7 +134,7 @@ class OrderSerializer(serializers.ModelSerializer):
             )
         ]
     order_date = serializers.DateTimeField(read_only=True, default=now)
-    
+
 
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
@@ -98,16 +143,17 @@ class OrderViewSet(viewsets.ModelViewSet):
 
 class UserSerializer(serializers.ModelSerializer):
     def get_last_ordered(self, obj):
-        if(obj.order_set.all()):
+        if (obj.order_set.all()):
             data = OrderSerializer(obj.order_set.latest('order_date')).data
             data.pop("userID")
             return data
-        else: return None
-    
-    
+        else:
+            return None
+
     class Meta:
         model = User
-        fields = fields = ['firstname', 'lastname', 'code', 'active', 'last_ordered']
+        fields = fields = ['firstname', 'lastname',
+                           'code', 'active', 'last_ordered']
     last_ordered = serializers.SerializerMethodField()
     firstname = serializers.CharField(write_only=True)
     lastname = serializers.CharField(write_only=True)
@@ -119,7 +165,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
 
     @action(detail=True, methods=["GET"])
-    def barcode(self,request, pk=None):
+    def barcode(self, request, pk=None):
         try:    # make sure user actually exists
             get_object_or_404(User, code=pk)
         except Exception as e:
@@ -137,17 +183,18 @@ class UserViewSet(viewsets.ModelViewSet):
         filter_kwargs['%s__day' % date_field_name] = today.day
         filter_kwargs['%s__month' % date_field_name] = today.month
         filter_kwargs['%s__year' % date_field_name] = today.year
-        cal =  obj.order_set.all().filter(**filter_kwargs)
+        cal = obj.order_set.all().filter(**filter_kwargs)
         response = HttpResponse()
-        if(cal):
+        if (cal):
             return Response(OrderSerializer(cal.first()).data)
         else:
             return Response({})
 
+
 class OrderHyperlinkSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Order
-        fields = ['url','userID', 'order_date', 'ordered_item', 'tax']
+        fields = ['url', 'userID', 'order_date', 'ordered_item', 'tax']
         validators = [
             DateValidator(
                 queryset=Order.objects.all(),
@@ -156,10 +203,12 @@ class OrderHyperlinkSerializer(serializers.HyperlinkedModelSerializer):
         ]
     order_date = serializers.DateTimeField(read_only=True, default=now)
 
+
 class OrderBillSerializer(serializers.ModelSerializer):
-    def get_total(self, obj:OrderBill):
+    def get_total(self, obj: OrderBill):
         return sum(order.ordered_item for order in obj.order_set.all())
-    def get_total_with_tax(self, obj:OrderBill):
+
+    def get_total_with_tax(self, obj: OrderBill):
         return sum(order.ordered_item+(order.ordered_item*order.tax/100) for order in obj.order_set.all())
 
     class Meta:
@@ -170,11 +219,10 @@ class OrderBillSerializer(serializers.ModelSerializer):
     total_with_tax = serializers.SerializerMethodField()
 
 
-
 class OrderBillViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=False, methods=["GET"])
-    def latest(self,request):
+    def latest(self, request):
         return Response(self.get_serializer(self.queryset.latest('month')).data)
-    
+
     queryset = OrderBill.objects.all()
     serializer_class = OrderBillSerializer
