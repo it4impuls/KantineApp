@@ -6,6 +6,23 @@ from rest_framework import serializers
 from django.utils.translation import gettext as _
 
 
+def current_bill():
+    thismonth=date.today().replace(day=1)
+    orders = OrderBill.objects.all().filter(month=thismonth)
+    if(orders):
+        bill= orders.first()
+    else:
+        bill = OrderBill(month=thismonth)
+        bill.save()
+    
+    return bill.pk
+
+def this_month():
+    return date.today().replace(day=1).month
+
+def this_year():
+    return date.today().replace(day=1).year
+
 def in4yrs() -> date:
     return now() + relativedelta(years=4)
 
@@ -20,6 +37,9 @@ def is_active(value:User):
     if (not value.active):
         raise serializers.ValidationError( "Der Benutzer ist nicht Aktiv")# _("User is not active"))
 
+class OrderBill(models.Model):
+    month = models.DateField()
+
 class Order(models.Model):
     class Tax(models.IntegerChoices):
         TAKEOUT = 19
@@ -29,3 +49,4 @@ class Order(models.Model):
     userID = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, unique_for_date="order_date", validators=[is_active])
     ordered_item = models.DecimalField(decimal_places=2, max_digits=6)
     tax = models.IntegerField(choices=Tax)
+    bill = models.ForeignKey(OrderBill, default=current_bill, on_delete=models.CASCADE, limit_choices_to={"month__month": this_month(),"month__year": this_year()})

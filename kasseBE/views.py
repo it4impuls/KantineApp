@@ -17,7 +17,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from .models import Order, User
+from .models import Order, User, OrderBill
 from rest_framework import serializers, viewsets
 from django.utils.timezone import now
 from io import BytesIO
@@ -29,9 +29,10 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.utils.translation import gettext as _
 from django.shortcuts import get_object_or_404
+# from django.core.
 
-@action(detail=True, methods=["GET"])
-def get_barcode(pk=None) -> BytesIO:
+# @action(detail=True, methods=["GET"])
+def get_barcode(pk) -> BytesIO:
     rv = BytesIO()
     Code128("0"*(Code128.digits-len(pk))+pk, writer=SVGWriter()).write(rv)
     return rv
@@ -91,7 +92,7 @@ class OrderSerializer(serializers.ModelSerializer):
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    
+
 
 class UserSerializer(serializers.ModelSerializer):
     def get_last_ordered(self, obj):
@@ -152,3 +153,26 @@ class OrderHyperlinkSerializer(serializers.HyperlinkedModelSerializer):
             )
         ]
     order_date = serializers.DateTimeField(read_only=True, default=now)
+
+class OrderBillSerializer(serializers.ModelSerializer):
+    def get_total(self, obj:OrderBill):
+        return sum(order.ordered_item for order in obj.order_set.all())
+    def get_total_with_tax(self, obj:OrderBill):
+        return sum(order.ordered_item+(order.ordered_item*order.tax/100) for order in obj.order_set.all())
+
+    class Meta:
+        model = OrderBill
+        fields = ['month', 'order_set', 'total', 'total_with_tax']
+    order_set = OrderSerializer(many=True)
+    total = serializers.SerializerMethodField()
+    total_with_tax = serializers.SerializerMethodField()
+
+
+
+class OrderBillViewSet(viewsets.ReadOnlyModelViewSet):
+    @action(detail=False, methods=["GET"])
+    def latest(self,request):
+        return Response(self.get_serializer(self.queryset.latest('month')).data)
+    
+    queryset = OrderBill.objects.all()
+    serializer_class = OrderBillSerializer
