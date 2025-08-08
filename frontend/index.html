@@ -109,24 +109,59 @@
                                 response_obj = JSON.parse(text)
                                 if (response.status == 400) {
                                     if (Object.hasOwn(response_obj, "userID") && Object.hasOwn(response_obj, "order")) {
-                                        const confirmOverwrite = confirm("Der Benutzer hat heute schon bestellt: " + response_obj["order"]["ordered_item"] + "€ + " + response_obj["order"]["tax"] + "% Steuer. Soll die Bestellung mit den neuen Daten korrigiert werden?");
-                                        if (confirmOverwrite) {
-                                            // let restext = '{"userID":["The user already ordered today. "], "order": 12}'
-                                            console.log(text)
-                                            console.log(response_obj["userID"][0])
-                                            fetch(url + JSON.parse(text)["order"]["url"], { method: "PUT", body: formadata }).then(
-                                                response => {
-                                                    if (response.status == 200) {
-                                                        alert("Erfolgreich")
-                                                    } else {
-                                                        response.text().then(errortext => {
-                                                            alert(errortext)
-                                                        })
-                                                    }
-                                                })
-                                        } else {
-                                            alert(text);
+
+                                        // showCustomConfirm("test")
+                                    
+                                        showCustomConfirm("Der Benutzer hat heute schon bestellt: " + response_obj["order"]["ordered_item"] + "€ + " + response_obj["order"]["tax"] + "% Steuer. Soll die Bestellung mit den neuen Daten korrigiert werden?").then(confirmOverwrite => {
+                                            if (confirmOverwrite) {
+                                                // let restext = '{"userID":["The user already ordered today. "], "order": 12}'
+                                                console.log(text)
+                                                console.log(response_obj["userID"][0])
+                                                fetch(url + JSON.parse(text)["order"]["url"], { method: "PUT", body: formadata }).then(
+                                                    response => {
+                                                        if (response.status == 200) {
+                                                            alert("Erfolgreich")
+                                                        } else {
+                                                            response.text().then(errortext => {
+                                                                alert(errortext)
+                                                            })
+                                                        }
+                                                    })
+                                            } 
+
+                                        });
+                                        
+                                        function showCustomConfirm(message) {
+                                            return new Promise((resolve) => {
+                                                const popup = document.getElementById("popup");
+                                                const msg = document.getElementById("popup-message");
+                                                const yesBtn = document.getElementById("popup-yes");
+                                                const noBtn = document.getElementById("popup-no");
+
+                                                msg.textContent = message;
+                                                popup.style.display = "flex";
+
+                                                const cleanup = () => {
+                                                    popup.style.display = "none";
+                                                    yesBtn.removeEventListener("click", onYes);
+                                                    noBtn.removeEventListener("click", onNo);
+                                                };
+
+                                                const onYes = () => {
+                                                    cleanup();
+                                                    resolve(true);
+                                                };
+
+                                                const onNo = () => {
+                                                    cleanup();
+                                                    resolve(false);
+                                                };
+
+                                                yesBtn.addEventListener("click", onYes);
+                                                noBtn.addEventListener("click", onNo);
+                                            });
                                         }
+
                                     } else if(response_obj["userID"]){
                                             alert(response_obj["userID"])
                                             
@@ -143,6 +178,16 @@
         });
         
     </script>
+
+<div id="popup" class="popup-overlay" style="display:none;">
+  <div class="popup-box">
+    <p id="popup-message">Möchtest du fortfahren?</p>
+    <div class="popup-buttons">
+      <button id="popup-yes">Ja</button>
+      <button id="popup-no">Nein</button>
+    </div>
+  </div>
+</div>
 
 </body>
 
