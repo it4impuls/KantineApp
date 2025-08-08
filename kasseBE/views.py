@@ -33,8 +33,10 @@ from django.shortcuts import get_object_or_404
 
 # @action(detail=True, methods=["GET"])
 def get_barcode(pk) -> BytesIO:
+    writer = SVGWriter()
+    options={"module_width":0.2, "module_height":3,"text_distance":2, "font_size":6}
     rv = BytesIO()
-    Code128("0"*(Code128.digits-len(pk))+pk, writer=SVGWriter()).write(rv)
+    Code128("0"*(Code128.digits-len(pk))+pk, writer=writer).write(rv, options=options)
     return rv
     
 
