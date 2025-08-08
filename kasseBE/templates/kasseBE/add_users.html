@@ -1,6 +1,9 @@
-hello world
+Teilnehmerdatei hier hochladen:
+<br>
+{% for err in form.errors.values %}
+    {{err}}<br><br>
+{% endfor %}
 
-{{form.errors}}
 <form enctype="multipart/form-data" action="" method="post"> 
     {% csrf_token %}
     {{ form }}

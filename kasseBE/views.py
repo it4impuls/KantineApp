@@ -30,12 +30,14 @@ from rest_framework.response import Response
 from django.utils.translation import gettext as _
 from django.shortcuts import get_object_or_404, render
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.validators import FileExtensionValidator
 from django import forms
 from csv import DictReader
 
 
 class UploadFileForm(forms.Form):
-    file = forms.FileField()
+    file = forms.FileField(widget=forms.FileInput(attrs={'accept':'text/csv'}), 
+                            validators=[FileExtensionValidator("csv", _("nur csv-Dateien sind erlaubt"))])
 
 
 def get_barcode(pk) -> BytesIO:
@@ -49,6 +51,7 @@ def get_barcode(pk) -> BytesIO:
 
 
 def handle_uploaded_file(f: InMemoryUploadedFile):
+    
     file = f.read().decode('utf-8').split("\n")
     ret = {"added": [], "duplicate": []}
     for line in DictReader(file, delimiter=",", fieldnames=["firstname", "lastname"]):
@@ -68,7 +71,7 @@ def add_users_from_file(request):
     if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            try:
+            try:                
                 ret = handle_uploaded_file(request.FILES["file"])
             except TypeError as e:
                 return HttpResponse(str(e) + ". Invalid format? file must have 2 columns seperated by a comma: firstname and lastname")
