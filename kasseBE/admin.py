@@ -1,12 +1,11 @@
 from django.contrib import admin
-from django.utils.html import format_html, format_html_join
+from django.utils.html import format_html
 from .models import User, Order, OrderBill
-from .views import get_barcode
 # Register your models here.
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    search_fields = ["firstname", "lastname", "code", "active",]
+    search_fields = ["firstname", "lastname", "code"]
     list_display = ["firstname", "lastname", "code", "active", "enddate" ]
     readonly_fields = ["barcode"]
     
@@ -36,6 +35,6 @@ class OrderBillAdmin(admin.ModelAdmin):
     @admin.display(description="total with tax")
     def total_with_tax(self, obj):
         return sum(order.ordered_item+(order.ordered_item*order.tax/100) for order in obj.order_set.all())
-    search_fields = list_display =list_display_links = ["id", "month" , 'total', 'total_with_tax']
+    search_fields = list_display =list_display_links = ["month"]
     readonly_fields = ['total', 'total_with_tax']
     inlines = [OrderInline]

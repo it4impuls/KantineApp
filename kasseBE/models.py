@@ -41,12 +41,8 @@ class OrderBill(models.Model):
     month = models.DateField()
 
 class Order(models.Model):
-    class Tax(models.IntegerChoices):
-        TAKEOUT = 19
-        INHOUSE = 7
-
     order_date = models.DateTimeField(auto_now=True)
-    userID = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, unique_for_date="order_date", validators=[is_active])
+    userID = models.ForeignKey(User, on_delete=models.PROTECT, unique_for_date="order_date", validators=[is_active])
     ordered_item = models.DecimalField(decimal_places=2, max_digits=6)
-    tax = models.IntegerField(choices=Tax)
-    bill = models.ForeignKey(OrderBill, default=current_bill, on_delete=models.CASCADE, limit_choices_to={"month__month": this_month(),"month__year": this_year()})
+    tax = models.IntegerField(choices={7:"7%",19:"19%"})
+    bill = models.ForeignKey(OrderBill, default=current_bill, on_delete=models.PROTECT, limit_choices_to={"month__month": this_month(),"month__year": this_year()})
