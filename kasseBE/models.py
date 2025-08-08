@@ -12,7 +12,7 @@ def in4yrs() -> date:
 class User(models.Model):
     firstname = models.CharField(max_length=50)
     lastname = models.CharField(max_length=50)
-    code  = models.CharField(max_length=50, unique=True, primary_key=True)
+    code  = models.AutoField(primary_key=True)
     active = models.BooleanField(default=True)
     enddate = models.DateField(default=in4yrs)
 
@@ -26,6 +26,6 @@ class Order(models.Model):
         INHOUSE = 7
 
     order_date = models.DateTimeField(auto_now=True)
-    userID = models.ForeignKey(User, on_delete=models.CASCADE, unique_for_date="order_date", validators=[is_active])
+    userID = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, unique_for_date="order_date", validators=[is_active])
     ordered_item = models.DecimalField(decimal_places=2, max_digits=6)
     tax = models.IntegerField(choices=Tax)

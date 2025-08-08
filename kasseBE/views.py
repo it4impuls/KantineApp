@@ -110,8 +110,6 @@ class UserSerializer(serializers.ModelSerializer):
     lastname = serializers.CharField(write_only=True)
     # enddate = serializers.DateTimeField(write_only=True)
 
-   
-
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()

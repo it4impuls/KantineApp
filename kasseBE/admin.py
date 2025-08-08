@@ -4,16 +4,9 @@ from .models import User, Order
 from .views import get_barcode
 # Register your models here.
 
-
-admin.site.register(Order)
-
-
-
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    
-    
-    model = User
+    # model=User
     empty_value_display = "-empty-"
     search_fields = ["firstname", "lastname", "code", "active",]
     list_display = ["firstname", "lastname", "code", "active", "enddate" ]
@@ -22,3 +15,9 @@ class UserAdmin(admin.ModelAdmin):
     @admin.display(description="barcode")
     def barcode(self, obj):
         return format_html('<img src="/{}/{}/{}" />', "users", obj.pk, "barcode")
+    
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    # model=Order
+    empty_value_display = "-empty-"
+    search_fields = list_display =list_display_links = ["order_date", "userID__code", "ordered_item", "tax" ]
