@@ -7,24 +7,28 @@ from django.utils.translation import gettext as _
 
 
 def current_bill():
-    thismonth=date.today().replace(day=1)+relativedelta(months=1, days=-1)
+    thismonth = date.today().replace(day=1)+relativedelta(months=1, days=-1)
     orders = OrderBill.objects.all().filter(month=thismonth)
-    if(orders):
-        bill= orders.first()
+    if (orders):
+        bill = orders.first()
     else:
         bill = OrderBill(month=thismonth)
         bill.save()
-    
+
     return bill.pk
+
 
 def this_month():
     return date.today().replace(day=1).month
 
+
 def this_year():
     return date.today().replace(day=1).year
 
+
 def in4yrs() -> date:
     return now() + relativedelta(years=4)
+
 
 class User(models.Model):
     class Meta:
@@ -32,19 +36,27 @@ class User(models.Model):
         verbose_name_plural = 'Kunde'
     firstname = models.CharField(max_length=50)
     lastname = models.CharField(max_length=50)
-    code  = models.AutoField(primary_key=True)
+    code = models.AutoField(primary_key=True)
     active = models.BooleanField(default=True)
     enddate = models.DateField(default=in4yrs)
 
-def is_active(value:User):
+
+def is_active(value: User):
     if (not value.active):
-        raise serializers.ValidationError( "Der Benutzer ist nicht Aktiv")# _("User is not active"))
+        # _("User is not active"))
+        raise serializers.ValidationError("Der Benutzer ist nicht Aktiv")
+
 
 class OrderBill(models.Model):
     class Meta:
         verbose_name = 'Abrechnung'
         verbose_name_plural = 'Abrechnungen'
     month = models.DateField()
+    cached_total = models.DecimalField(
+        decimal_places=2, max_digits=6, null=True)
+    cached_taxed_total = models.DecimalField(
+        decimal_places=2, max_digits=6, null=True)
+
 
 class Order(models.Model):
     class Meta:
@@ -52,7 +64,9 @@ class Order(models.Model):
         verbose_name_plural = 'Bestellungen'
 
     order_date = models.DateTimeField(auto_now=True)
-    userID = models.ForeignKey(User, on_delete=models.PROTECT, unique_for_date="order_date", validators=[is_active])
+    userID = models.ForeignKey(User, on_delete=models.PROTECT,
+                               unique_for_date="order_date", validators=[is_active])
     ordered_item = models.DecimalField(decimal_places=2, max_digits=6)
-    tax = models.IntegerField(choices={7:"7%",19:"19%"})
-    bill = models.ForeignKey(OrderBill, default=current_bill, on_delete=models.PROTECT, limit_choices_to={"month__month": this_month(),"month__year": this_year()})
+    tax = models.IntegerField(choices={7: "7%", 19: "19%"})
+    bill = models.ForeignKey(OrderBill, default=current_bill, on_delete=models.PROTECT, limit_choices_to={
+                             "month__month": this_month(), "month__year": this_year()})
