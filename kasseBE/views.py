@@ -74,7 +74,7 @@ def add_users_from_file(request):
             try:                
                 ret = handle_uploaded_file(request.FILES["file"])
             except TypeError as e:
-                return HttpResponse(str(e) + ". Invalid format? file must have 2 columns seperated by a comma: firstname and lastname")
+                return HttpResponse(str(e) + ". Invalid format? file must have 2 columns seperated by a comma: firstname, lastname")
             except Exception as e:
                 return HttpResponse(e)
             return HttpResponse("<br>".join(("added: " + ", ".join(ret["added"]), "duplicate: "+", ".join([" ".join((val.values())) for val in ret["duplicate"]]))))

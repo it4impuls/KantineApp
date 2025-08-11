@@ -7,7 +7,7 @@ from django.utils.translation import gettext as _
 
 
 def current_bill():
-    thismonth=date.today().replace(day=1)
+    thismonth=date.today().replace(day=1)+relativedelta(months=1, days=-1)
     orders = OrderBill.objects.all().filter(month=thismonth)
     if(orders):
         bill= orders.first()
@@ -27,6 +27,9 @@ def in4yrs() -> date:
     return now() + relativedelta(years=4)
 
 class User(models.Model):
+    class Meta:
+        verbose_name = 'Kunde'
+        verbose_name_plural = 'Kunde'
     firstname = models.CharField(max_length=50)
     lastname = models.CharField(max_length=50)
     code  = models.AutoField(primary_key=True)
@@ -38,9 +41,16 @@ def is_active(value:User):
         raise serializers.ValidationError( "Der Benutzer ist nicht Aktiv")# _("User is not active"))
 
 class OrderBill(models.Model):
+    class Meta:
+        verbose_name = 'Abrechnung'
+        verbose_name_plural = 'Abrechnungen'
     month = models.DateField()
 
 class Order(models.Model):
+    class Meta:
+        verbose_name = 'Bestellung'
+        verbose_name_plural = 'Bestellungen'
+
     order_date = models.DateTimeField(auto_now=True)
     userID = models.ForeignKey(User, on_delete=models.PROTECT, unique_for_date="order_date", validators=[is_active])
     ordered_item = models.DecimalField(decimal_places=2, max_digits=6)
