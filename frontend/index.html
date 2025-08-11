@@ -1,194 +1,202 @@
 <!DOCTYPE html>
 <html lang="de">
+	<head>
+		<link rel="stylesheet" href="style.css" />
+		<meta charset="UTF-8" />
+	</head>
 
-<head>
+	<script>
+		document.addEventListener("click", () => {
+			document.getElementById("userID").focus();
+		});
+		const url = "http://kantinekasse:8000";
 
-    <link rel="stylesheet" href="style.css">
-    <meta charset="UTF-8">
+		window.onload = function () {
+			preise = [
+				"3.00",
+				"3.50",
+				"4.50",
+				"6.00",
+				"6.50",
+				"6.90",
+				"7.00",
+				"7.50",
+				"7.90",
+				"8.50",
+			];
 
+			form = document.getElementById("menus");
+			console.log(form);
+			preise.forEach((preis) => {
+				console.log(preis);
+				label = document.createElement("label");
+				input = document.createElement("input");
+				input.name = "ordered_item";
+				input.id = "menu_" + preis;
+				input.value = preis;
+				input.type = "radio";
+				input.classList.add("input_invis");
+				input.required = true;
+				// input.style.display = "none"
 
-</head>
+				label.innerHTML = preis + "€";
+				label.name = "menulabel";
+				label.classList.add("menulabel");
+				label.classList.add("btn");
 
-<script>
-    document.addEventListener("click", () => { document.getElementById("userID").focus(); })
-    const url = "http://kantinekasse:8000"
+				form.appendChild(label);
+				label.appendChild(input);
+			});
+		};
+	</script>
 
-    window.onload = function () {
-        preise = ["3.00", "3.50", "4.50", "6.00", "6.50", "6.90", "7.00", "7.50", "7.90", "8.50"]
+	<body>
+		<title>Mensamenü</title>
+		<!-- <h1>Mensa Menü</h1> -->
+		<form id="form">
+			<!-- Text Input -->
+			<label class="btn l_UID">
+				ID:
+				<input
+					type="text"
+					id="userID"
+					name="userID"
+					class="I_UID"
+					required
+					autofocus
+					autocomplete="off" />
+			</label>
 
-        form = document.getElementById("menus")
-        console.log(form)
-        preise.forEach(preis => {
-            console.log(preis)
-            label = document.createElement("label")
-            input = document.createElement("input")
-            input.name = "ordered_item"
-            input.id = "menu_" + preis
-            input.value = preis
-            input.type = "radio"
-            input.classList.add("input_invis")
-            input.required = true
-            // input.style.display = "none"
+			<br /><br /><br />
 
-            label.innerHTML = preis + "€"
-            label.name = "menulabel"
-            label.classList.add("menulabel")
-            label.classList.add("btn")
+			<div id="menus" class="menus">
+				<!-- ordered_item Checkbox -->
+			</div>
 
-            form.appendChild(label)
-            label.appendChild(input)
-        });
-    }
+			<div class="footer">
+				<label class="btn tax"
+					>7%
+					<input
+						type="radio"
+						name="tax"
+						value="7"
+						class="input_invis" />
+				</label>
 
-</script>
+				<label class="btn tax"
+					>19%
+					<input
+						type="radio"
+						name="tax"
+						value="19"
+						class="input_invis"
+						checked />
+				</label>
+				<!-- Submit Button -->
+				<button type="submit" class="submit btn">Bestätigen</button>
+			</div>
+		</form>
 
-<body>
-    <title>Mensamenü</title>
-    <!-- <h1>Mensa Menü</h1> -->
-    <form id="form">
-        <!-- Text Input -->
-        <label class="btn l_UID">
-            ID:
-            <input type="text" id="userID" name="userID" class="I_UID" required autofocus autocomplete="off">
-        </label>
-        
-        <br><br><br>
+		<script>
+			function showCustomConfirm(message) {
+				return new Promise((resolve) => {
+					const popup = document.getElementById("popup");
+					const msg = document.getElementById("popup-message");
+					const yesBtn = document.getElementById("popup-yes");
+					const noBtn = document.getElementById("popup-no");
 
+					msg.textContent = message;
+					popup.style.display = "flex";
 
+					const cleanup = () => {
+						popup.style.display = "none";
+						yesBtn.removeEventListener("click", onYes);
+						noBtn.removeEventListener("click", onNo);
+					};
 
+					const onYes = () => {
+						cleanup();
+						resolve(true);
+					};
 
-        <div id="menus" class="menus">
-            <!-- ordered_item Checkbox -->
-        </div>
+					const onNo = () => {
+						cleanup();
+						resolve(false);
+					};
 
-        <div class="footer">
+					yesBtn.addEventListener("click", onYes);
+					noBtn.addEventListener("click", onNo);
+				});
+			}
 
-            <label class="btn tax">7%
-                <input type="radio" name="tax" value="7" class="input_invis" >
-            </label>
+			document
+				.getElementById("form")
+				.addEventListener("submit", async (event) => {
+					const e_userID = document.getElementById("userID");
+					event.preventDefault();
 
+					var formadata = new FormData(event.target);
+					if (!formadata.get("userID")) {
+						alert("keine ID-Nummer");
+						return;
+					} else if (!formadata.get("ordered_item")) {
+						alert("kein Menü");
+						return;
+					} else if (!formadata.get("tax")) {
+						alert("keine Steuer");
+						return;
+					}
+					e_userID.value = "";
 
+					var orderResponse = await fetch(url + /orders/, {
+						method: "POST",
+						body: formadata,
+					});
+					var orderText = await orderResponse.text();
+					var response_obj = JSON.parse(orderText);
+					if (orderResponse.status >= 400) {
+						if (
+							Object.hasOwn(response_obj, "userID") &&
+							Object.hasOwn(response_obj, "order")
+						) {
+							if (
+								await showCustomConfirm(
+									"Der Benutzer hat heute schon bestellt: " +
+										response_obj["order"]["ordered_item"] +
+										"€ + " +
+										response_obj["order"]["tax"] +
+										"% Steuer. Soll die Bestellung mit den neuen Daten korrigiert werden?"
+								)
+							) {
+								var put_response = await fetch(
+									url + response_obj["order"]["url"],
+									{ method: "PUT", body: formadata }
+								);
+								if (put_response.status == 200) {
+									alert("Erfolgreich");
+								} else {
+									alert(await put_response.text());
+								}
+							}
+						} else if (response_obj["userID"]) {
+							alert(response_obj["userID"]);
+						} else {
+							alert(orderText);
+						}
+					} else {
+						alert("Erfolgreich");
+					}
+				});
+		</script>
 
-            <label class="btn tax">19%
-                <input type="radio" name="tax" value="19" class="input_invis" checked>
-            </label>
-            <!-- Submit Button -->
-            <button type='submit' class="submit btn">Bestätigen</button>
-        </div>
-
-
-
-    </form>
-
-
-    <script>
-        document.getElementById("form").addEventListener("submit", (event) => {
-            const e_userID = document.getElementById("userID");
-            event.preventDefault()
-            
-
-            var formadata = new FormData(event.target)
-            if (!formadata.get("userID")) {
-                alert("keine ID-Nummer")
-                return
-            } else if (!formadata.get("ordered_item")) {
-                alert("kein Menü")
-                return
-            } else if (!formadata.get("tax")) {
-                alert("keine Steuer")
-                return
-            }
-            e_userID.value = ""
-
-            fetch(url + /orders/, { method: "POST", body: formadata })
-                .then(
-                    response => {
-                        console.log(response.status);
-                        response.text().then(
-                            text => {
-                                response_obj = JSON.parse(text)
-                                if (response.status == 400) {
-                                    if (Object.hasOwn(response_obj, "userID") && Object.hasOwn(response_obj, "order")) {
-
-                                        // showCustomConfirm("test")
-                                    
-                                        showCustomConfirm("Der Benutzer hat heute schon bestellt: " + response_obj["order"]["ordered_item"] + "€ + " + response_obj["order"]["tax"] + "% Steuer. Soll die Bestellung mit den neuen Daten korrigiert werden?").then(confirmOverwrite => {
-                                            if (confirmOverwrite) {
-                                                // let restext = '{"userID":["The user already ordered today. "], "order": 12}'
-                                                console.log(text)
-                                                console.log(response_obj["userID"][0])
-                                                fetch(url + JSON.parse(text)["order"]["url"], { method: "PUT", body: formadata }).then(
-                                                    response => {
-                                                        if (response.status == 200) {
-                                                            alert("Erfolgreich")
-                                                        } else {
-                                                            response.text().then(errortext => {
-                                                                alert(errortext)
-                                                            })
-                                                        }
-                                                    })
-                                            } 
-
-                                        });
-                                        
-                                        function showCustomConfirm(message) {
-                                            return new Promise((resolve) => {
-                                                const popup = document.getElementById("popup");
-                                                const msg = document.getElementById("popup-message");
-                                                const yesBtn = document.getElementById("popup-yes");
-                                                const noBtn = document.getElementById("popup-no");
-
-                                                msg.textContent = message;
-                                                popup.style.display = "flex";
-
-                                                const cleanup = () => {
-                                                    popup.style.display = "none";
-                                                    yesBtn.removeEventListener("click", onYes);
-                                                    noBtn.removeEventListener("click", onNo);
-                                                };
-
-                                                const onYes = () => {
-                                                    cleanup();
-                                                    resolve(true);
-                                                };
-
-                                                const onNo = () => {
-                                                    cleanup();
-                                                    resolve(false);
-                                                };
-
-                                                yesBtn.addEventListener("click", onYes);
-                                                noBtn.addEventListener("click", onNo);
-                                            });
-                                        }
-
-                                    } else if(response_obj["userID"]){
-                                            alert(response_obj["userID"])
-                                            
-                                    } else {
-                                        alert(text);
-                                    }
-                                } else {
-                                    alert("Erfolgreich");
-                                }
-                            });
-                    } // .json(), .blob(), etc.
-                )
-            
-        });
-        
-    </script>
-
-<div id="popup" class="popup-overlay" style="display:none;">
-  <div class="popup-box">
-    <p id="popup-message">Möchtest du fortfahren?</p>
-    <div class="popup-buttons">
-      <button id="popup-yes">Ja</button>
-      <button id="popup-no">Nein</button>
-    </div>
-  </div>
-</div>
-
-</body>
-
+		<div id="popup" class="popup-overlay" style="display: none">
+			<div class="popup-box">
+				<p id="popup-message">Möchtest du fortfahren?</p>
+				<div class="popup-buttons">
+					<button id="popup-yes">Ja</button>
+					<button id="popup-no">Nein</button>
+				</div>
+			</div>
+		</div>
+	</body>
 </html>
