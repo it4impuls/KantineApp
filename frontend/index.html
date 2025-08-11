@@ -34,7 +34,7 @@
 				input.name = "ordered_item";
 				input.id = "menu_" + preis;
 				input.value = preis;
-				input.type = "radio";
+                input.type = "radio";
 				input.classList.add("input_invis");
 				input.required = true;
 				// input.style.display = "none"
@@ -137,13 +137,13 @@
 
 					var formadata = new FormData(event.target);
 					if (!formadata.get("userID")) {
-						alert("keine ID-Nummer");
+						await showCustomConfirm("keine ID-Nummer");
 						return;
 					} else if (!formadata.get("ordered_item")) {
-						alert("kein Menü");
+						await showCustomConfirm("kein Menü");
 						return;
 					} else if (!formadata.get("tax")) {
-						alert("keine Steuer");
+						await showCustomConfirm("keine Steuer");
 						return;
 					}
 					e_userID.value = "";
@@ -173,18 +173,18 @@
 									{ method: "PUT", body: formadata }
 								);
 								if (put_response.status == 200) {
-									alert("Erfolgreich");
+									await showCustomConfirm("Erfolgreich");
 								} else {
-									alert(await put_response.text());
+									await showCustomConfirm(await put_response.text());
 								}
 							}
 						} else if (response_obj["userID"]) {
-							alert(response_obj["userID"]);
+							await showCustomConfirm(response_obj["userID"]);
 						} else {
-							alert(orderText);
+							await showCustomConfirm(orderText);
 						}
 					} else {
-						alert("Erfolgreich");
+						await showCustomConfirm("Erfolgreich");
 					}
 				});
 		</script>
