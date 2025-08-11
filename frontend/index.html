@@ -12,6 +12,7 @@
 		const url = "http://kantinekasse:8000";
 
 		window.onload = function () {
+            Notification.requestPermission()
 			preise = [
 				"3.00",
 				"3.50",
@@ -137,13 +138,13 @@
 
 					var formadata = new FormData(event.target);
 					if (!formadata.get("userID")) {
-						await showCustomConfirm("keine ID-Nummer");
+						alert("keine ID-Nummer");
 						return;
 					} else if (!formadata.get("ordered_item")) {
-						await showCustomConfirm("kein Menü");
+						alert("kein Menü");
 						return;
 					} else if (!formadata.get("tax")) {
-						await showCustomConfirm("keine Steuer");
+						alert("keine Steuer");
 						return;
 					}
 					e_userID.value = "";
@@ -173,18 +174,18 @@
 									{ method: "PUT", body: formadata }
 								);
 								if (put_response.status == 200) {
-									await showCustomConfirm("Erfolgreich");
+									alert("Erfolgreich");
 								} else {
-									await showCustomConfirm(await put_response.text());
+									alert(await put_response.text());
 								}
 							}
 						} else if (response_obj["userID"]) {
-							await showCustomConfirm(response_obj["userID"]);
+							alert(response_obj["userID"]);
 						} else {
-							await showCustomConfirm(orderText);
+							alert(orderText);
 						}
 					} else {
-						await showCustomConfirm("Erfolgreich");
+						alert("Erfolgreich");
 					}
 				});
 		</script>
