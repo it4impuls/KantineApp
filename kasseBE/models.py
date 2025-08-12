@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils.timezone import localdate, now
+from django.utils.timezone import now
 from datetime import date
 from dateutil.relativedelta import relativedelta
 from rest_framework import serializers
@@ -16,14 +16,6 @@ def current_bill():
         bill.save()
 
     return bill.pk
-
-
-def this_month():
-    return date.today().replace(day=1).month
-
-
-def this_year():
-    return date.today().replace(day=1).year
 
 
 def in4yrs() -> date:
@@ -69,4 +61,4 @@ class Order(models.Model):
     ordered_item = models.DecimalField(decimal_places=2, max_digits=6)
     tax = models.IntegerField(choices={7: "7%", 19: "19%"})
     bill = models.ForeignKey(OrderBill, default=current_bill, on_delete=models.PROTECT, limit_choices_to={
-                             "month__month": this_month(), "month__year": this_year()})
+                             "month__month": date.today().month, "month__year": date.today().year})

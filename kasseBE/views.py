@@ -52,7 +52,7 @@ def get_barcode(pk) -> BytesIO:
     return rv
 
 
-def handle_uploaded_file(f: InMemoryUploadedFile):
+def add_users_from_file(f: InMemoryUploadedFile):
     file = f.read().decode('utf-8').split("\n")
     ret = {"added": [], "duplicate": []}
     try:
@@ -68,6 +68,7 @@ def handle_uploaded_file(f: InMemoryUploadedFile):
             ret["added"].append(", ".join(line.values()))
     except Exception as e:
         print("new error: "+e)
+        # raise e
     return ret
 
 
@@ -76,7 +77,7 @@ def add_users_from_file(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             try:
-                ret = handle_uploaded_file(request.FILES["file"])
+                ret = add_users_from_file(request.FILES["file"])
             except TypeError as e:
                 return HttpResponse(str(e) + ". Invalid format? file must have 2 columns seperated by a comma: firstname, lastname")
             except Exception as e:
@@ -106,10 +107,8 @@ class DateValidator(UniqueForDateValidator):
     message = _("The user already ordered today. ")
     message = "Der Kunde hat heute bereits bestellt."
 
-    def filter_queryset(self, attrs, queryset, field_name, date_field_name):
-        ret = super().filter_queryset(attrs, queryset, field_name, date_field_name)
-        return ret
-
+    # überschreiben von UniqueForDateValidator::BaseUniqueForValidator::__call__ da wir die order in der response haben wollen.
+    # theoretisch könnten wir nur die message ändern, aber das wäre schwieriger im frontend zu parsen.
     def __call__(self, attrs, serializer):
         # Determine the underlying model field names. These may not be the
         # same as the serializer field names if `source=<>` is set.
@@ -195,7 +194,6 @@ class UserViewSet(viewsets.ModelViewSet):
         filter_kwargs['%s__month' % date_field_name] = today.month
         filter_kwargs['%s__year' % date_field_name] = today.year
         cal = obj.order_set.all().filter(**filter_kwargs)
-        response = HttpResponse()
         if (cal):
             return Response(OrderSerializer(cal.first()).data)
         else:

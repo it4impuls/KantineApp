@@ -3,17 +3,17 @@ from django.contrib.admin import DateFieldListFilter
 from django.utils.html import format_html
 from django.utils import timezone
 from django.db import models
-from django.http.response import HttpResponse,  FileResponse
+from django.http.response import HttpResponse
 from .models import User, Order, OrderBill
 from datetime import date, timedelta
 from django.utils.translation import gettext_lazy as _
 from csv import DictWriter
 from .views import OrderSerializer
-from io import StringIO, BytesIO
 # Register your models here.
 
 
 class CustomDateFieldListFilter(DateFieldListFilter):
+    # überschreiben der DateFieldListFilter::__init__ um mehr links hinzuzufügen.
     def __init__(self, field, request, params, model, model_admin, field_path):
         now = timezone.now()
         # When time zone support is enabled, convert "now" to the user's time
@@ -25,12 +25,6 @@ class CustomDateFieldListFilter(DateFieldListFilter):
             today = now.replace(hour=0, minute=0, second=0, microsecond=0)
         else:  # field is a models.DateField
             today = now.date()
-        tomorrow = today + timedelta(days=1)
-        if today.month == 12:
-            next_month = today.replace(year=today.year + 1, month=1, day=1)
-        else:
-            next_month = today.replace(month=today.month + 1, day=1)
-        next_year = today.replace(year=today.year + 1, month=1, day=1)
         week_start = today - timedelta(days=today.weekday())
         week_end = week_start + timedelta(days=6)
         super().__init__(field, request, params, model, model_admin, field_path)
