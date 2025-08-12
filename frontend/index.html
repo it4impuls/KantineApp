@@ -178,20 +178,20 @@
 									url + response_obj["order"]["url"],
 									{ method: "PUT", body: formadata }
 								);
-								if (put_response.status == 200) {
+								/*if (put_response.status == 200) {
 									alert("Erfolgreich");
 								} else {
 									alert(await put_response.text());
-								}
+								}*/
 							}
 						} else if (response_obj["userID"]) {
 							alert(response_obj["userID"]);
 						} else {
 							alert(orderText);
 						}
-					} else {
+					} /*else {
 						alert("Erfolgreich");
-					}
+					}*/
 				});
 		</script>
 

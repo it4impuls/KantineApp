@@ -35,8 +35,7 @@ body {
 
 .menulabel {
   flex-basis: 40%; /* zwischen 33.3% und 50%, damit genau 2 reihen generiert werden. */
-  background-color: #76C1C3;
-  
+  background-color:#9ED8DE;
   
 }
 
@@ -45,7 +44,7 @@ textarea:focus, input:focus{
 }
 
 .menulabel:has(input[type="radio"]:checked) {
-  background:#548D95 !important;
+  background:#D98DFB !important;
   border: 5%;
   border-color: black;
 
@@ -61,11 +60,11 @@ textarea:focus, input:focus{
 }
 
 .tax {
-  background-color: #F0AE44
+  background-color: #e8e7a4
 }
 
 .tax:has(input[type="radio"]:checked) {
-  background:#AE7F21 !important;
+  background:#D98DFB !important;
 }
 
 .input_invis {
@@ -79,16 +78,21 @@ textarea:focus, input:focus{
   font-size:calc(12px + 7vh);
   min-height: 30px;
   border-radius: 4vh;
-  margin: 0.1%;
+  margin: 0.3%;
   text-align: center;
   flex-grow: 1;
   
 }
 
+.btn:has(input[type="radio"]:checked) {
+  outline-color: black;
+  outline-style: solid;
+  outline-width: 5px;
+}
 
 
 .submit {
-  background-color: #789342;
+  background-color: #17cf53;
 }
 
 .menus {
