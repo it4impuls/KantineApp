@@ -27,6 +27,8 @@ from django.http.response import HttpResponse,  FileResponse
 from rest_framework.validators import UniqueForDateValidator, qs_exists, ValidationError
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 from django.utils.translation import gettext as _
 from django.shortcuts import get_object_or_404, render
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -36,8 +38,8 @@ from csv import DictReader
 
 
 class UploadFileForm(forms.Form):
-    file = forms.FileField(widget=forms.FileInput(attrs={'accept':'text/csv'}), 
-                            validators=[FileExtensionValidator("csv", _("nur csv-Dateien sind erlaubt"))])
+    file = forms.FileField(widget=forms.FileInput(attrs={'accept': 'text/csv'}),
+                           validators=[FileExtensionValidator(["csv"], _("nur csv-Dateien sind erlaubt"))])
 
 
 def get_barcode(pk) -> BytesIO:
@@ -50,20 +52,23 @@ def get_barcode(pk) -> BytesIO:
     return rv
 
 
-def handle_uploaded_file(f: InMemoryUploadedFile):
-    
+def add_users_from_file(f: InMemoryUploadedFile):
     file = f.read().decode('utf-8').split("\n")
     ret = {"added": [], "duplicate": []}
-    for line in DictReader(file, delimiter=",", fieldnames=["firstname", "lastname"]):
-        print(line)
-        existing = User.objects.all().filter(**line)
-        if (existing):
-            ret['duplicate'].append(line)
-            continue
-        u = User(**line)
-        line["code"] = u.code
-        u.save()
-        ret["added"].append(", ".join(line.values()))
+    try:
+        for line in DictReader(file, delimiter=",", fieldnames=["firstname", "lastname"]):
+            # print(line)
+            existing = User.objects.all().filter(**line)
+            if (existing):
+                ret['duplicate'].append(line)
+                continue
+            u = User(**line)
+            line["code"] = u.code
+            u.save()
+            ret["added"].append(", ".join(line.values()))
+    except Exception as e:
+        print("new error: "+e)
+        # raise e
     return ret
 
 
@@ -71,13 +76,13 @@ def add_users_from_file(request):
     if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            try:                
-                ret = handle_uploaded_file(request.FILES["file"])
+            try:
+                ret = add_users_from_file(request.FILES["file"])
             except TypeError as e:
                 return HttpResponse(str(e) + ". Invalid format? file must have 2 columns seperated by a comma: firstname, lastname")
             except Exception as e:
                 return HttpResponse(e)
-            return HttpResponse("<br>".join(("added: " + ", ".join(ret["added"]), "duplicate: "+", ".join([" ".join((val.values())) for val in ret["duplicate"]]))))
+            return HttpResponse("<br>".join(("added: " + ", ".join(ret["added"] or ["-"]), "duplicate: "+", ".join([" ".join((val.values())) for val in ret["duplicate"] or ["-"]]))))
     else:
         form = UploadFileForm()
     return render(request, "kasseBE/add_users.html", {"form": form})
@@ -102,10 +107,8 @@ class DateValidator(UniqueForDateValidator):
     message = _("The user already ordered today. ")
     message = "Der Kunde hat heute bereits bestellt."
 
-    def filter_queryset(self, attrs, queryset, field_name, date_field_name):
-        ret = super().filter_queryset(attrs, queryset, field_name, date_field_name)
-        return ret
-
+    # überschreiben von UniqueForDateValidator::BaseUniqueForValidator::__call__ da wir die order in der response haben wollen.
+    # theoretisch könnten wir nur die message ändern, aber das wäre schwieriger im frontend zu parsen.
     def __call__(self, attrs, serializer):
         # Determine the underlying model field names. These may not be the
         # same as the serializer field names if `source=<>` is set.
@@ -140,6 +143,8 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class OrderViewSet(viewsets.ModelViewSet):
+    # authentication_classes = [SessionAuthentication, BasicAuthentication]
+    # permission_classes = [IsAuthenticated]
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
 
@@ -164,6 +169,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    # authentication_classes = [SessionAuthentication, BasicAuthentication]
+    # permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
@@ -187,7 +194,6 @@ class UserViewSet(viewsets.ModelViewSet):
         filter_kwargs['%s__month' % date_field_name] = today.month
         filter_kwargs['%s__year' % date_field_name] = today.year
         cal = obj.order_set.all().filter(**filter_kwargs)
-        response = HttpResponse()
         if (cal):
             return Response(OrderSerializer(cal.first()).data)
         else:
@@ -223,9 +229,11 @@ class OrderBillSerializer(serializers.ModelSerializer):
 
 
 class OrderBillViewSet(viewsets.ReadOnlyModelViewSet):
+    # authentication_classes = [SessionAuthentication, BasicAuthentication]
+    # permission_classes = [IsAuthenticated]
+    queryset = OrderBill.objects.all()
+    serializer_class = OrderBillSerializer
+
     @action(detail=False, methods=["GET"])
     def latest(self, request):
         return Response(self.get_serializer(self.queryset.latest('month')).data)
-
-    queryset = OrderBill.objects.all()
-    serializer_class = OrderBillSerializer
