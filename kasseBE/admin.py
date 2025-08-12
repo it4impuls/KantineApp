@@ -1,9 +1,10 @@
 from django.contrib import admin
 from django.contrib.admin import DateFieldListFilter
 from django.utils.html import format_html
-from django.utils import timezone
+from django.utils import timezone, dateparse
 from django.db import models
 from django.http.response import HttpResponse
+from django.db.models import Q
 from .models import User, Order, OrderBill
 from datetime import date, timedelta
 from django.utils.translation import gettext_lazy as _
@@ -11,7 +12,52 @@ from csv import DictWriter, writer
 from .views import OrderSerializer
 
 
+class InputFilter(admin.SimpleListFilter):
+    # from https://hakibenita.com/how-to-add-a-text-filter-to-django-admin
+    template = 'admin/input_filter.html'
+
+    def lookups(self, request, model_admin):
+        # Dummy, required to show the filter.
+        return ((),)
+
+    def choices(self, changelist):
+        # Grab only the "all" option.
+        all_choice = next(super().choices(changelist))
+        all_choice['query_parts'] = (
+            (k, v)
+            for k, v in changelist.get_filters_params().items()
+            if k != self.parameter_name
+        )
+        yield all_choice
+
+
+class UIDFilter(InputFilter):
+    title = "Monat (yyyy-mm)"
+    parameter_name = "order_date"
+
+    def queryset(self, request, queryset):
+        if self.value() is not None:
+            try:
+                # try convert other formats into iso
+                val = self.value().replace(".", "-").replace("/", "-")
+                if (val.count("-") == 1):
+                    d = dateparse.parse_date(val+"-01")
+                else:
+                    d = dateparse.parse_date(val)
+            except ValueError as e:
+                self.used_parameters[self.parameter_name] = _(str(e))
+                return queryset.none()
+            if not d:
+                self.used_parameters[self.parameter_name] = "invalid formatting"
+                return queryset.none()
+
+            return queryset.filter(
+                Q(order_date__month=d.month)
+            )
+
+
 class CustomDateFieldListFilter(DateFieldListFilter):
+    # TODO: export past months. Paginators?
     # überschreiben der DateFieldListFilter::__init__ um mehr links hinzuzufügen.
     def __init__(self, field, request, params, model, model_admin, field_path):
         now = timezone.now()
@@ -36,7 +82,7 @@ class CustomDateFieldListFilter(DateFieldListFilter):
         ),)
 
 
-@admin.action(description="Export selected as csv")
+@admin.action(description=_("Export selected as csv"))
 def export_orders(modeladmin, request, queryset):
     if not queryset:
         return
@@ -53,10 +99,10 @@ def export_orders(modeladmin, request, queryset):
     w = writer(response)
     w.writerow("")
     w.writerow((
-        "7%: ", sum(entry.ordered_item for entry in queryset.filter(tax=7))))
+        "7%: ", sum(entry.ordered_item for entry in queryset.filter(tax=7)), "€"))
     w.writerow(
-        ("19%: ", sum(entry.ordered_item for entry in queryset.filter(tax=19))))
-    w.writerow(("Total: ", sum(entry.ordered_item for entry in queryset)))
+        ("19%: ", sum(entry.ordered_item for entry in queryset.filter(tax=19)), "€"))
+    w.writerow(("Total: ", sum(entry.ordered_item for entry in queryset), "€"))
 
     return response
 
@@ -76,7 +122,7 @@ class UserAdmin(admin.ModelAdmin):
 class OrderAdmin(admin.ModelAdmin):
     search_fields = list_display = list_display_links = [
         "order_date", "userID__code", "ordered_item", "tax"]
-    list_filter = (('order_date', CustomDateFieldListFilter),)
+    list_filter = (('order_date', CustomDateFieldListFilter), UIDFilter)
     actions = [export_orders]
     # change_list_template = "admin/order_change_list.html"
 
