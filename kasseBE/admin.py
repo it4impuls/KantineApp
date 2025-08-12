@@ -52,7 +52,7 @@ class UIDFilter(InputFilter):
                 return queryset.none()
 
             return queryset.filter(
-                Q(order_date__month=d.month)
+                Q(order_date__month=d.month, order_date__year=d.year)
             )
 
 
