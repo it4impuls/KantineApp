@@ -6,7 +6,7 @@ from rest_framework import serializers
 from django.utils.translation import gettext as _
 
 
-def current_bill():
+def current_bill() -> int:
     thismonth = date.today().replace(day=1)+relativedelta(months=1, days=-1)
     orders = OrderBill.objects.all().filter(month=thismonth)
     if (orders):

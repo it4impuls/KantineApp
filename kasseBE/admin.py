@@ -7,9 +7,8 @@ from django.http.response import HttpResponse
 from .models import User, Order, OrderBill
 from datetime import date, timedelta
 from django.utils.translation import gettext_lazy as _
-from csv import DictWriter
+from csv import DictWriter, writer
 from .views import OrderSerializer
-# Register your models here.
 
 
 class CustomDateFieldListFilter(DateFieldListFilter):
@@ -41,6 +40,8 @@ class CustomDateFieldListFilter(DateFieldListFilter):
 def export_orders(modeladmin, request, queryset):
     if not queryset:
         return
+
+    Order.tax
     data = [OrderSerializer(a).data for a in queryset]
     if len(data) == 0:
         return
@@ -49,6 +50,14 @@ def export_orders(modeladmin, request, queryset):
     response['Content-Disposition'] = 'attachment; filename="Orders.csv"'
     wr = DictWriter(response, headers)
     wr.writerows(data)
+    w = writer(response)
+    w.writerow("")
+    w.writerow((
+        "7%: ", sum(entry.ordered_item for entry in queryset.filter(tax=7))))
+    w.writerow(
+        ("19%: ", sum(entry.ordered_item for entry in queryset.filter(tax=19))))
+    w.writerow(("Total: ", sum(entry.ordered_item for entry in queryset)))
+
     return response
 
 
@@ -74,7 +83,7 @@ class OrderAdmin(admin.ModelAdmin):
 
 class OrderInline(admin.TabularInline):
     @admin.display(description="user")
-    def user(self, obj):
+    def user(self, obj: Order):
         return obj.userID.code
     model = Order
     readonly_fields = ["user", "order_date", "ordered_item", "tax"]

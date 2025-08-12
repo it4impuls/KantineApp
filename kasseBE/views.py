@@ -57,7 +57,6 @@ def add_users_from_file(f: InMemoryUploadedFile):
     ret = {"added": [], "duplicate": []}
     try:
         for line in DictReader(file, delimiter=",", fieldnames=["firstname", "lastname"]):
-            # print(line)
             existing = User.objects.all().filter(**line)
             if (existing):
                 ret['duplicate'].append(line)
@@ -150,7 +149,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    def get_last_ordered(self, obj):
+    def get_last_ordered(self, obj: User):
         if (obj.order_set.all()):
             data = OrderSerializer(obj.order_set.latest('order_date')).data
             data.pop("userID")
