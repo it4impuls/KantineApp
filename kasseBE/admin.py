@@ -1,8 +1,61 @@
 from django.contrib import admin
+from django.contrib.admin import DateFieldListFilter
 from django.utils.html import format_html
+from django.utils import timezone
+from django.db import models
+from django.http.response import HttpResponse,  FileResponse
 from .models import User, Order, OrderBill
-from datetime import date
+from datetime import date, timedelta
+from django.utils.translation import gettext_lazy as _
+from csv import DictWriter
+from .views import OrderSerializer
+from io import StringIO, BytesIO
 # Register your models here.
+
+
+class CustomDateFieldListFilter(DateFieldListFilter):
+    def __init__(self, field, request, params, model, model_admin, field_path):
+        now = timezone.now()
+        # When time zone support is enabled, convert "now" to the user's time
+        # zone so Django's definition of "Today" matches what the user expects.
+        if timezone.is_aware(now):
+            now = timezone.localtime(now)
+
+        if isinstance(field, models.DateTimeField):
+            today = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        else:  # field is a models.DateField
+            today = now.date()
+        tomorrow = today + timedelta(days=1)
+        if today.month == 12:
+            next_month = today.replace(year=today.year + 1, month=1, day=1)
+        else:
+            next_month = today.replace(month=today.month + 1, day=1)
+        next_year = today.replace(year=today.year + 1, month=1, day=1)
+        week_start = today - timedelta(days=today.weekday())
+        week_end = week_start + timedelta(days=6)
+        super().__init__(field, request, params, model, model_admin, field_path)
+        self.links += ((
+            _("This week"),
+            {
+                self.lookup_kwarg_since: week_start,
+                self.lookup_kwarg_until: week_end,
+            },
+        ),)
+
+
+@admin.action(description="Export selected as csv")
+def export_orders(modeladmin, request, queryset):
+    if not queryset:
+        return
+    data = [OrderSerializer(a).data for a in queryset]
+    if len(data) == 0:
+        return
+    headers = data[0].keys()
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="Orders.csv"'
+    wr = DictWriter(response, headers)
+    wr.writerows(data)
+    return response
 
 
 @admin.register(User)
@@ -20,6 +73,9 @@ class UserAdmin(admin.ModelAdmin):
 class OrderAdmin(admin.ModelAdmin):
     search_fields = list_display = list_display_links = [
         "order_date", "userID__code", "ordered_item", "tax"]
+    list_filter = (('order_date', CustomDateFieldListFilter),)
+    actions = [export_orders]
+    # change_list_template = "admin/order_change_list.html"
 
 
 class OrderInline(admin.TabularInline):
