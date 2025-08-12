@@ -81,7 +81,7 @@ def add_users_from_file(request):
                 return HttpResponse(str(e) + ". Invalid format? file must have 2 columns seperated by a comma: firstname, lastname")
             except Exception as e:
                 return HttpResponse(e)
-            return HttpResponse("<br>".join(("added: " + ", ".join(ret["added"]), "duplicate: "+", ".join([" ".join((val.values())) for val in ret["duplicate"]]))))
+            return HttpResponse("<br>".join(("added: " + ", ".join(ret["added"] or ["-"]), "duplicate: "+", ".join([" ".join((val.values())) for val in ret["duplicate"] or ["-"]]))))
     else:
         form = UploadFileForm()
     return render(request, "kasseBE/add_users.html", {"form": form})
