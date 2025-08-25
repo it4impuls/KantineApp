@@ -35,7 +35,7 @@ body {
 }
 
 #popup-yes, #popup-no, #popup-message {
-  font-size:calc(12px + 2vh);
+  font-size:calc(12px + 3vh);
 }
 
 .menulabel {
