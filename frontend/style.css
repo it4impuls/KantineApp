@@ -86,7 +86,7 @@ textarea:focus, input:focus{
   margin: 0.3%;
   text-align: center;
   flex-grow: 1;
-  
+  color: black;
 }
 
 .btn:has(input[type="radio"]:checked) {
