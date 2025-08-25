@@ -25,7 +25,6 @@ body {
 }
 
 .I_UID {
-  font-size:calc(12px + 6vh);
   width: inherit;
   min-height: 12;
   margin: 1%;
