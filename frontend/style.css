@@ -34,6 +34,10 @@ body {
   flex-basis: 100px;
 }
 
+#popup-yes, #popup-no, #popup-message {
+  font-size:calc(12px + 2vh);
+}
+
 .menulabel {
   flex-basis: 40%; /* zwischen 33.3% und 50%, damit genau 2 reihen generiert werden. */
   background-color:#9ED8DE;
