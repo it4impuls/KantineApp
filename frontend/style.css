@@ -22,12 +22,14 @@ body {
 .l_UID{
   display: flex;
   width: 100%;
+  margin: 1%;
 }
 
 .I_UID {
+  font-size:calc(12px + 6vh);
   width: inherit;
-  min-height: 12;
-  margin: 1%;
+  min-height: 30px;
+  
   flex-grow: 1;
   flex-basis: 100px;
 }
