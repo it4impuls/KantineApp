@@ -63,9 +63,10 @@ MIDDLEWARE = [
 ]
 
 
-CORS_ALLOW_ALL_ORIGINS = True # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
+# If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS= CSRF_TRUSTED_ORIGINS = [
+CORS_ALLOWED_ORIGINS = CSRF_TRUSTED_ORIGINS = [
     'http://*',
     'https://*'
 ]
@@ -97,7 +98,7 @@ WSGI_APPLICATION = 'kantineApp.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': "django.db.backends."+environ.get("DB_ENGINE", 'sqlite3'), 
+        'ENGINE': "django.db.backends."+environ.get("DB_ENGINE", 'sqlite3'),
         'NAME': environ.get("DB_NAME", 'kursplan.sqlite3'),
         'USER': environ.get("DB_USER", 'root'),
         'PASSWORD': environ.get("DB_PASSWORD", 'root'),
@@ -135,19 +136,19 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'CET'
+# TIME_ZONE = 'CET'
 
 USE_I18N = True
 
 
 LANGUAGES = [
-  ['en', 'English'],
-  ['de', 'Deutsch']
+    ['en', 'English'],
+    ['de', 'Deutsch']
 ]
 
 
 LOCALE_PATHS = [
-  path.join(BASE_DIR, 'locales')
+    path.join(BASE_DIR, 'locales')
 ]
 
 USE_TZ = False
