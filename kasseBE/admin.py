@@ -5,7 +5,7 @@ from django.utils import timezone, dateparse
 from django.db import models
 from django.http.response import HttpResponse
 from django.db.models import Q
-from .models import User, Order, OrderBill
+from .models import User, Order
 from datetime import date, timedelta
 from django.utils.translation import gettext_lazy as _
 from csv import DictWriter, writer
@@ -140,38 +140,38 @@ class OrderInline(admin.TabularInline):
     extra = 1
 
 
-def calc_total(obj: OrderBill):
-    return sum(order.ordered_item for order in obj.order_set.all())
+# def calc_total(obj: OrderBill):
+#     return sum(order.ordered_item for order in obj.order_set.all())
 
 
-def calc_total_taxed(obj: OrderBill):
-    return sum(order.ordered_item+(order.ordered_item*order.tax/100) for order in obj.order_set.all())
+# def calc_total_taxed(obj: OrderBill):
+#     return sum(order.ordered_item+(order.ordered_item*order.tax/100) for order in obj.order_set.all())
 
 
-@admin.register(OrderBill)
-class OrderBillAdmin(admin.ModelAdmin):
+# @admin.register(OrderBill)
+# class OrderBillAdmin(admin.ModelAdmin):
 
-    search_fields = list_display = list_display_links = readonly_fields = [
-        'month', 'total', 'total_with_tax']
-    ordering = ('-month',)
-    inlines = [OrderInline]
+#     search_fields = list_display = list_display_links = readonly_fields = [
+#         'month', 'total', 'total_with_tax']
+#     ordering = ('-month',)
+#     inlines = [OrderInline]
 
-    @admin.display(description="total")
-    def total(self, obj: OrderBill):
-        today = date.today()
-        if obj.month < today:
-            if not obj.cached_total:
-                obj.cached_total = calc_total(obj)
-                obj.save()
-            return obj.cached_total
-        return calc_total(obj)
+#     @admin.display(description="total")
+#     def total(self, obj: OrderBill):
+#         today = date.today()
+#         if obj.month < today:
+#             if not obj.cached_total:
+#                 obj.cached_total = calc_total(obj)
+#                 obj.save()
+#             return obj.cached_total
+#         return calc_total(obj)
 
-    @admin.display(description="total with tax")
-    def total_with_tax(self, obj: OrderBill):
-        today = date.today()
-        if obj.month < today:
-            if not obj.cached_taxed_total:
-                obj.cached_taxed_total = calc_total_taxed(obj)
-                obj.save()
-            return obj.cached_taxed_total
-        return calc_total_taxed(obj)
+#     @admin.display(description="total with tax")
+#     def total_with_tax(self, obj: OrderBill):
+#         today = date.today()
+#         if obj.month < today:
+#             if not obj.cached_taxed_total:
+#                 obj.cached_taxed_total = calc_total_taxed(obj)
+#                 obj.save()
+#             return obj.cached_taxed_total
+#         return calc_total_taxed(obj)

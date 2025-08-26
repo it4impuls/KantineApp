@@ -17,7 +17,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from .models import Order, User, OrderBill
+from .models import Order, User
 from rest_framework import serializers, viewsets
 from django.utils.timezone import now
 from io import BytesIO
@@ -212,27 +212,27 @@ class OrderHyperlinkSerializer(serializers.HyperlinkedModelSerializer):
     order_date = serializers.DateTimeField(read_only=True, default=now)
 
 
-class OrderBillSerializer(serializers.ModelSerializer):
-    def get_total(self, obj: OrderBill):
-        return sum(order.ordered_item for order in obj.order_set.all())
+# class OrderBillSerializer(serializers.ModelSerializer):
+#     def get_total(self, obj: OrderBill):
+#         return sum(order.ordered_item for order in obj.order_set.all())
 
-    def get_total_with_tax(self, obj: OrderBill):
-        return sum(order.ordered_item+(order.ordered_item*order.tax/100) for order in obj.order_set.all())
+#     def get_total_with_tax(self, obj: OrderBill):
+#         return sum(order.ordered_item+(order.ordered_item*order.tax/100) for order in obj.order_set.all())
 
-    class Meta:
-        model = OrderBill
-        fields = ['month', 'order_set', 'total', 'total_with_tax']
-    order_set = OrderSerializer(many=True)
-    total = serializers.SerializerMethodField()
-    total_with_tax = serializers.SerializerMethodField()
+#     class Meta:
+#         model = OrderBill
+#         fields = ['month', 'order_set', 'total', 'total_with_tax']
+#     order_set = OrderSerializer(many=True)
+#     total = serializers.SerializerMethodField()
+#     total_with_tax = serializers.SerializerMethodField()
 
 
-class OrderBillViewSet(viewsets.ReadOnlyModelViewSet):
-    # authentication_classes = [SessionAuthentication, BasicAuthentication]
-    # permission_classes = [IsAuthenticated]
-    queryset = OrderBill.objects.all()
-    serializer_class = OrderBillSerializer
+# class OrderBillViewSet(viewsets.ReadOnlyModelViewSet):
+#     # authentication_classes = [SessionAuthentication, BasicAuthentication]
+#     # permission_classes = [IsAuthenticated]
+#     queryset = OrderBill.objects.all()
+#     serializer_class = OrderBillSerializer
 
-    @action(detail=False, methods=["GET"])
-    def latest(self, request):
-        return Response(self.get_serializer(self.queryset.latest('month')).data)
+#     @action(detail=False, methods=["GET"])
+#     def latest(self, request):
+#         return Response(self.get_serializer(self.queryset.latest('month')).data)
