@@ -82,7 +82,7 @@ class CustomDateFieldListFilter(DateFieldListFilter):
         ),)
 
 
-@admin.action(description=_("Export selected as csv"))
+@admin.action(description=_("Export Auswahl als csv"))
 def export_orders(modeladmin, request, queryset):
     if not queryset:
         return
@@ -95,8 +95,10 @@ def export_orders(modeladmin, request, queryset):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="Orders.csv"'
     wr = DictWriter(response, headers)
+    w = writer(response)        # required for non-dict writing
+    # w.writerow(("Bestellungs ID", "Kunde", "Zeit", "Menu", "Steuer"))
+    wr.writeheader()
     wr.writerows(data)
-    w = writer(response)
     w.writerow("")
     w.writerow((
         "7%: ", sum(entry.ordered_item for entry in queryset.filter(tax=7)), "€"))
@@ -115,6 +117,7 @@ class UserAdmin(admin.ModelAdmin):
 
     @admin.display(description="barcode")
     def barcode(self, obj):
+        # link zum barcode svg (/users/pk/barcode)
         return format_html('<img src="/{}/{}/{}" />', "users", obj.pk, "barcode")
 
 
