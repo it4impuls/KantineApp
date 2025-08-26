@@ -27,10 +27,14 @@ body {
 .I_UID {
   font-size:calc(12px + 6vh);
   width: inherit;
-  min-height: 12;
-  margin: 1%;
+  min-height: 30px;
+  
   flex-grow: 1;
   flex-basis: 100px;
+}
+
+#popup-yes, #popup-no, #popup-message {
+  font-size:calc(12px + 3vh);
 }
 
 .menulabel {
@@ -81,13 +85,11 @@ textarea:focus, input:focus{
   margin: 0.3%;
   text-align: center;
   flex-grow: 1;
-  
+  color: black;
 }
 
 .btn:has(input[type="radio"]:checked) {
-  outline-color: black;
-  outline-style: solid;
-  outline-width: 5px;
+  box-shadow: 0 0 0 5px black
 }
 
 
