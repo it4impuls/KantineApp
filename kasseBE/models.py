@@ -14,7 +14,6 @@ from django.utils.translation import gettext as _
 #     else:
 #         bill = OrderBill(month=thismonth)
 #         bill.save()
-
 #     return bill.pk
 
 
@@ -39,7 +38,7 @@ def is_active(value: User):
         raise serializers.ValidationError("Der Benutzer ist nicht Aktiv")
     if (value.enddate < date.today()):
         raise serializers.ValidationError(
-            "Der Benutzer hat sein end-datum erreicht.")
+            "Der Code ist abgelaufen.")
 
 
 # class OrderBill(models.Model):
