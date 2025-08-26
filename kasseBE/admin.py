@@ -17,11 +17,13 @@ class InputFilter(admin.SimpleListFilter):
     template = 'admin/input_filter.html'
 
     def lookups(self, request, model_admin):
-        # Dummy, required to show the filter.
+        # Dummy, required to show the filter. This will prevent facets from working
         return ((),)
 
     def choices(self, changelist):
         # Grab only the "all" option.
+        # empty lookups() results in exception if add_facets are active
+        changelist.add_facets = False
         all_choice = next(super().choices(changelist))
         all_choice['query_parts'] = (
             (k, v)
