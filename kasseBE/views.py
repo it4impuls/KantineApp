@@ -35,6 +35,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.validators import FileExtensionValidator
 from django import forms
 from csv import DictReader
+from django.utils.html import format_html
 
 
 class UploadFileForm(forms.Form):
@@ -52,20 +53,23 @@ def get_barcode(pk) -> BytesIO:
     return rv
 
 
-def add_users_from_file(f: InMemoryUploadedFile):
+def handle_upload(f: InMemoryUploadedFile):
     file = f.read().decode('utf-8').split("\n")
     ret = {"added": [], "duplicate": []}
     try:
 
-        for line in DictReader(file, fieldnames=["firstname", "lastname"], dialect='excel'):
+        for line in DictReader(file, fieldnames=["firstname", "lastname"], dialect='excel', delimiter=';', lineterminator='\r\n'):
+            if (not line):
+                continue
             existing = User.objects.all().filter(**line)
             if (existing):
                 ret['duplicate'].append(line)
                 continue
             u = User(**line)
-            line["code"] = u.code
             u.save()
-            ret["added"].append(", ".join(line.values()))
+            line["code"] = format_html(
+                '<img src="/{}/{}/{}" />', "users", u.code, "barcode")
+            ret["added"].append(", ".join(str(val) for val in line.values()))
     except Exception as e:
         print("new error: "+e)
         # raise e
@@ -77,12 +81,12 @@ def add_users_from_file(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             try:
-                ret = add_users_from_file(request.FILES["file"])
+                ret = handle_upload(request.FILES["file"])
             except TypeError as e:
                 return HttpResponse(str(e) + ". Invalid format? file must have 2 columns seperated by a comma: firstname, lastname")
             except Exception as e:
                 return HttpResponse(e)
-            return HttpResponse("<br>".join(("added: " + ", ".join(ret["added"] or ["-"]), "duplicate: "+", ".join([" ".join((val.values())) for val in ret["duplicate"] or ["-"]]))))
+            return HttpResponse("<br>".join(("added: <br>" + ",  <br>".join(ret["added"] or ["-"]), "duplicate: <br>"+",<br>".join([" ".join((val.values())) for val in ret["duplicate"] or ["-"]]))))
     else:
         form = UploadFileForm()
     return render(request, "kasseBE/add_users.html", {"form": form})
