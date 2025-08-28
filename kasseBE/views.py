@@ -56,7 +56,8 @@ def add_users_from_file(f: InMemoryUploadedFile):
     file = f.read().decode('utf-8').split("\n")
     ret = {"added": [], "duplicate": []}
     try:
-        for line in DictReader(file, delimiter=",", fieldnames=["firstname", "lastname"]):
+
+        for line in DictReader(file, fieldnames=["firstname", "lastname"], dialect='excel'):
             existing = User.objects.all().filter(**line)
             if (existing):
                 ret['duplicate'].append(line)

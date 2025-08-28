@@ -96,8 +96,9 @@ def export_orders(modeladmin, request, queryset):
     headers = data[0].keys()
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="Orders.csv"'
-    wr = DictWriter(response, headers)
-    w = writer(response)        # required for non-dict writing
+    wr = DictWriter(response, headers, dialect='excel')
+    # required for non-dict writing
+    w = writer(response, dialect='excel')
     # w.writerow(("Bestellungs ID", "Kunde", "Zeit", "Menu", "Steuer"))
     wr.writeheader()
     wr.writerows(data)
