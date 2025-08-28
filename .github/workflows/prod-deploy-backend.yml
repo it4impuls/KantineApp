@@ -19,6 +19,9 @@ jobs:
   build: 
     # runs-on: [ubuntu-latest,build,self-hosted]
     runs-on: [production]
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
