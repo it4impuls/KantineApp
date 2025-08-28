@@ -19,6 +19,7 @@ jobs:
   build: 
     # runs-on: [ubuntu-latest,build,self-hosted]
     runs-on: [production]
+    environment: prod
     permissions:
       contents: read
       packages: write
