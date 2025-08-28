@@ -63,13 +63,16 @@ def handle_upload(f: InMemoryUploadedFile):
                 continue
             existing = User.objects.all().filter(**line)
             if (existing):
-                ret['duplicate'].append(line)
+                line["code"] = format_html(
+                    '<img src="/{}/{}/{}" />', "users", existing.first().code, "barcode")
+                ret['duplicate'].append(" ".join(str(val)
+                                        for val in line.values()))
                 continue
             u = User(**line)
             u.save()
             line["code"] = format_html(
                 '<img src="/{}/{}/{}" />', "users", u.code, "barcode")
-            ret["added"].append(", ".join(str(val) for val in line.values()))
+            ret["added"].append(" ".join(str(val) for val in line.values()))
     except Exception as e:
         print("new error: "+e)
         # raise e
@@ -86,7 +89,7 @@ def add_users_from_file(request):
                 return HttpResponse(str(e) + ". Invalid format? file must have 2 columns seperated by a comma: firstname, lastname")
             except Exception as e:
                 return HttpResponse(e)
-            return HttpResponse("<br>".join(("added: <br>" + ",  <br>".join(ret["added"] or ["-"]), "duplicate: <br>"+",<br>".join([" ".join((val.values())) for val in ret["duplicate"]]))))
+            return HttpResponse("<br>".join(("added: <br>" + "<br>".join(ret["added"]), "<br>duplicate: <br>"+"<br>".join(ret["duplicate"]))))
     else:
         form = UploadFileForm()
     return render(request, "kasseBE/add_users.html", {"form": form})
