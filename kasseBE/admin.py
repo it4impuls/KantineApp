@@ -132,18 +132,19 @@ def export_orders(modeladmin, request, queryset):
     headers = data[0].keys()
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="Orders.csv"'
-    wr = DictWriter(response, headers, dialect='excel')
+    wr = DictWriter(response, headers, dialect='excel',
+                    delimiter=';', lineterminator='\r\n')
     # required for non-dict writing
-    w = writer(response, dialect='excel')
+    w = writer(response, dialect='excel', delimiter=';', lineterminator='\r\n')
     # w.writerow(("Bestellungs ID", "Kunde", "Zeit", "Menu", "Steuer"))
     wr.writeheader()
     wr.writerows(data)
     w.writerow("")
     w.writerow((
-        "7%: ", sum(entry.ordered_item for entry in queryset.filter(tax=7)), "€"))
+        "7%: ", sum(entry.ordered_item for entry in queryset.filter(tax=7))))
     w.writerow(
-        ("19%: ", sum(entry.ordered_item for entry in queryset.filter(tax=19)), "€"))
-    w.writerow(("Total: ", sum(entry.ordered_item for entry in queryset), "€"))
+        ("19%: ", sum(entry.ordered_item for entry in queryset.filter(tax=19))))
+    w.writerow(("Total: ", sum(entry.ordered_item for entry in queryset)))
 
     return response
 
