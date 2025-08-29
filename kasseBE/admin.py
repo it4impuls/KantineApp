@@ -9,7 +9,7 @@ from .models import User, Order
 from datetime import date, timedelta
 from django.utils.translation import gettext_lazy as _
 from csv import DictWriter, writer
-from .views import OrderSerializer, get_barcode
+from .views import OrderSerializer, UserSerializer, get_barcode
 import zipfile
 from io import BytesIO
 
@@ -107,12 +107,31 @@ def export_user_Barcodes(modeladmin, request, queryset):
     return response
 
 
+@admin.action(description=_("Export Auswahl als csv"))
+def export_users(modeladmin, request, queryset):
+    if not queryset:
+        return
+
+    data = [{"Vorname": user.firstname, "Nachname": user.lastname}
+            for user in queryset if type(user) == User]
+    if len(data) == 0:
+        return
+    headers = data[0].keys()
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="Teilnehmer.csv"'
+    wr = DictWriter(response, headers, dialect='excel',
+                    delimiter=';', lineterminator='\r\n')
+    wr.writeheader()
+    wr.writerows(data)
+    return response
+
+
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     search_fields = ["firstname", "lastname", "code"]
     list_display = ["firstname", "lastname", "code", "active", "enddate"]
     readonly_fields = ["barcode"]
-    actions = [export_user_Barcodes]
+    actions = [export_user_Barcodes, export_users]
 
     @admin.display(description="barcode")
     def barcode(self, obj):
@@ -125,7 +144,6 @@ def export_orders(modeladmin, request, queryset):
     if not queryset:
         return
 
-    Order.tax
     data = [OrderSerializer(a).data for a in queryset]
     if len(data) == 0:
         return
