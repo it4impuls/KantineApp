@@ -4,6 +4,7 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 from rest_framework import serializers
 from django.utils.translation import gettext as _
+from django.shortcuts import get_object_or_404
 
 
 # def current_bill() -> int:
@@ -32,11 +33,16 @@ class User(models.Model):
     enddate = models.DateField(default=in4yrs)
 
 
-def is_active(value: User):
-    if (not value.active):
+def is_active(value: User | int):
+    try:
+        user = get_object_or_404(User, code=value)
+    except Exception as e:
+        user = value
+        ...
+    if (not user.active):
         # _("User is not active"))
         raise serializers.ValidationError("Der Benutzer ist nicht Aktiv")
-    if (value.enddate < date.today()):
+    if (user.enddate < date.today()):
         raise serializers.ValidationError(
             "Der Code ist abgelaufen.")
 

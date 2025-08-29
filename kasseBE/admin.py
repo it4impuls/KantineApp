@@ -9,7 +9,9 @@ from .models import User, Order
 from datetime import date, timedelta
 from django.utils.translation import gettext_lazy as _
 from csv import DictWriter, writer
-from .views import OrderSerializer
+from .views import OrderSerializer, get_barcode
+import zipfile
+from io import BytesIO
 
 
 class InputFilter(admin.SimpleListFilter):
@@ -84,6 +86,40 @@ class CustomDateFieldListFilter(DateFieldListFilter):
         ),)
 
 
+@admin.action(description=_("Export Barcodes als .zip"))
+def export_user_Barcodes(modeladmin, request, queryset):
+    response = HttpResponse(content_type='application/zip')
+    response['Content-Disposition'] = 'attachment; filename="Barcodes.zip"'
+    try:
+        # s = BytesIO()
+        with zipfile.ZipFile(response, "w") as zf:
+            for user in queryset:
+                assert type(user) == User
+                zf.writestr(
+                    "_".join((user.firstname, user.lastname))+".svg", get_barcode(str(user.code)).getvalue())
+        # zf.open("barcodes.zip")
+        # s.seek(0)
+        # return FileResponse(s, filename="barcodes.zip", as_attachment=True)
+    except TypeError as e:
+        return HttpResponse(str(e) + ". Invalid format? file must have 2 columns seperated by a comma: firstname, lastname")
+    except Exception as e:
+        return HttpResponse(e)
+    return response
+
+
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    search_fields = ["firstname", "lastname", "code"]
+    list_display = ["firstname", "lastname", "code", "active", "enddate"]
+    readonly_fields = ["barcode"]
+    actions = [export_user_Barcodes]
+
+    @admin.display(description="barcode")
+    def barcode(self, obj):
+        # link zum barcode svg (/users/pk/barcode)
+        return format_html('<img src="/{}/{}/{}" />', "users", obj.pk, "barcode")
+
+
 @admin.action(description=_("Export Auswahl als csv"))
 def export_orders(modeladmin, request, queryset):
     if not queryset:
@@ -110,18 +146,6 @@ def export_orders(modeladmin, request, queryset):
     w.writerow(("Total: ", sum(entry.ordered_item for entry in queryset), "€"))
 
     return response
-
-
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    search_fields = ["firstname", "lastname", "code"]
-    list_display = ["firstname", "lastname", "code", "active", "enddate"]
-    readonly_fields = ["barcode"]
-
-    @admin.display(description="barcode")
-    def barcode(self, obj):
-        # link zum barcode svg (/users/pk/barcode)
-        return format_html('<img src="/{}/{}/{}" />', "users", obj.pk, "barcode")
 
 
 @admin.register(Order)
