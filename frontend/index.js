@@ -34,6 +34,7 @@ function showCustomConfirm(message) {
 
 async function submit_form(event){
     const e_userID = document.getElementById("userID");
+    const e_menus = document.getElementsByClassName("menulabel")
     event.preventDefault();
 
     var formadata = new FormData(event.target);
@@ -48,6 +49,18 @@ async function submit_form(event){
         return;
     }
     e_userID.value = "";
+
+    for (let element of e_menus){
+        // depends on the input being the only element!
+        // to be safe we could use:
+        // element.querySelector('input[type="radio"]:checked').checked=false
+        // but thats way less readable and I dont think we will ever add more children.
+        
+        if(element.firstElementChild.checked){
+            element.firstElementChild.checked=false
+            break;
+        }
+    }
 
     try {
         var orderResponse = await fetch(url + "/orders/", {
