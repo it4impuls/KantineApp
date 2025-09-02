@@ -9,7 +9,7 @@
 		document.addEventListener("click", () => {
 			document.getElementById("userID").focus();
 		});
-		const url = "http://213.239.215.91:8080";
+		const url = "http://kantinekasse.impulsreha.local:8000";
 
 		window.addEventListener("load", (event) => {
 			preise = [
@@ -145,12 +145,23 @@
 					}
 					e_userID.value = "";
 
-					var orderResponse = await fetch(url + "/orders/", {
-						method: "POST",
-						body: formadata,
-					});
+					try {
+						var orderResponse = await fetch(url + "/orders/", {
+							method: "POST",
+							body: formadata,
+						});
+					} catch (error) {
+						if (error instanceof TypeError) {
+							alert(
+								"Konnte keine verbindung mit dem Server herstellen!"
+							);
+						}
+						console.log(error);
+						return;
+					}
 					var orderText = await orderResponse.text();
 					var response_obj = JSON.parse(orderText);
+					console.log(orderResponse);
 					if (orderResponse.status >= 400) {
 						if (
 							Object.hasOwn(response_obj, "userID") &&
