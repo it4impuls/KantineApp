@@ -1,0 +1,146 @@
+const url = "http://kantinekasse.impulsreha.local:8000";
+
+
+function showCustomConfirm(message) {
+    return new Promise((resolve) => {
+        const popup = document.getElementById("popup");
+        const msg = document.getElementById("popup-message");
+        const yesBtn = document.getElementById("popup-yes");
+        const noBtn = document.getElementById("popup-no");
+
+        msg.textContent = message;
+        popup.style.display = "flex";
+
+        const cleanup = () => {
+            popup.style.display = "none";
+            yesBtn.removeEventListener("click", onYes);
+            noBtn.removeEventListener("click", onNo);
+        };
+
+        const onYes = () => {
+            cleanup();
+            resolve(true);
+        };
+
+        const onNo = () => {
+            cleanup();
+            resolve(false);
+        };
+
+        yesBtn.addEventListener("click", onYes);
+        noBtn.addEventListener("click", onNo);
+    });
+}
+
+async function submit_form(event){
+    const e_userID = document.getElementById("userID");
+    event.preventDefault();
+
+    var formadata = new FormData(event.target);
+    if (!formadata.get("userID")) {
+        alert("keine ID-Nummer");
+        return;
+    } else if (!formadata.get("ordered_item")) {
+        alert("kein Menü");
+        return;
+    } else if (!formadata.get("tax")) {
+        alert("keine Steuer");
+        return;
+    }
+    e_userID.value = "";
+
+    try {
+        var orderResponse = await fetch(url + "/orders/", {
+            method: "POST",
+            body: formadata,
+        });
+    } catch (error) {
+        if (error instanceof TypeError) {
+            alert(
+                "Konnte keine verbindung mit dem Server herstellen!"
+            );
+        }
+        console.log(error);
+        return;
+    }
+    var orderText = await orderResponse.text();
+    var response_obj = JSON.parse(orderText);
+    console.log(orderResponse);
+    if (orderResponse.status >= 400) {
+        if (
+            Object.hasOwn(response_obj, "userID") &&
+            Object.hasOwn(response_obj, "order")
+        ) {
+            if (
+                await showCustomConfirm(
+                    "Der Benutzer hat heute schon bestellt: " +
+                        response_obj["order"]["ordered_item"] +
+                        "€ + " +
+                        response_obj["order"]["tax"] +
+                        "% Steuer. Soll die Bestellung mit den neuen Daten korrigiert werden?"
+                )
+            ) {
+                var put_response = await fetch(
+                    url + response_obj["order"]["url"],
+                    { method: "PUT", body: formadata }
+                );
+                /*if (put_response.status == 200) {
+                    alert("Erfolgreich");
+                } else {
+                    alert(await put_response.text());
+                }*/
+            }
+        } else if (response_obj["userID"]) {
+            alert(response_obj["userID"]);
+        } else {
+            alert(orderText);
+        }
+    } /*else {
+        alert("Erfolgreich");
+    }*/
+};
+
+
+
+window.addEventListener("load", (event) => {
+    document.getElementById("form")
+        .addEventListener("submit", submit_form);
+
+    document.addEventListener("click", () => {
+        document.getElementById("userID").focus();
+    });
+    
+
+    preise = [
+        "3.00",
+        "3.50",
+        "4.50",
+        "6.00",
+        "6.50",
+        "6.90",
+        "7.00",
+        "7.50",
+        "7.90",
+        "8.50",
+    ];
+
+    form = document.getElementById("menus");
+    preise.forEach((preis) => {
+        label = document.createElement("label");
+        input = document.createElement("input");
+        input.name = "ordered_item";
+        input.id = "menu_" + preis;
+        input.value = preis;
+        input.type = "radio";
+        input.classList.add("input_invis");
+        input.required = true;
+
+        label.innerHTML = preis + "€";
+        label.name = "menulabel";
+        label.classList.add("menulabel");
+        label.classList.add("btn");
+
+        form.appendChild(label);
+        label.appendChild(input);
+    });
+});
