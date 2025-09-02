@@ -3,7 +3,7 @@ const url = "http://kantinekasse.impulsreha.local:8000";
 
 function showCustomConfirm(message) {
     return new Promise((resolve) => {
-        const popup = document.getElementById("popup");
+        const popup = document.getElementById("popup-query");
         const msg = document.getElementById("popup-message");
         const yesBtn = document.getElementById("popup-yes");
         const noBtn = document.getElementById("popup-no");
@@ -35,6 +35,7 @@ function showCustomConfirm(message) {
 async function submit_form(event){
     const e_userID = document.getElementById("userID");
     const e_menus = document.getElementsByClassName("menulabel")
+    const loader =document.getElementById("popup-loader")
     event.preventDefault();
 
     var formadata = new FormData(event.target);
@@ -63,17 +64,24 @@ async function submit_form(event){
     }
 
     try {
+        
+        loader.style.display = "flex";
         var orderResponse = await fetch(url + "/orders/", {
             method: "POST",
             body: formadata,
-        });
+            signal: AbortSignal.timeout(2000)
+    
+        }).finally(()=>{loader.style.display = "none";});
     } catch (error) {
+        var msg = error.message;
         if (error instanceof TypeError) {
-            alert(
-                "Konnte keine verbindung mit dem Server herstellen!"
-            );
-        }
+            msg = "Request konnte nicht gesendet werden. Ist das Gerät mit dem internet verbunden?"
+        } else if (error instanceof DOMException) {
+            msg = "Verbindung mit dem server konnte nicht aufgebaut werden! (Timeout)."
+        } 
+        alert(msg);
         console.log(error);
+        
         return;
     }
     var orderText = await orderResponse.text();
