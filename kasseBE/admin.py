@@ -96,7 +96,7 @@ def export_user_Barcodes(modeladmin, request, queryset):
             for user in queryset:
                 assert type(user) == User
                 zf.writestr(
-                    "_".join((user.firstname, user.lastname))+".svg", get_barcode(str(user.code)).getvalue())
+                    "_".join((user.lastname, user.firstname))+".svg", get_barcode(str(user.code)).getvalue())
         # zf.open("barcodes.zip")
         # s.seek(0)
         # return FileResponse(s, filename="barcodes.zip", as_attachment=True)
