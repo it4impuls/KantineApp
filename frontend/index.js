@@ -65,7 +65,6 @@ async function submit_form(event){
     }
     var orderText = await orderResponse.text();
     var response_obj = JSON.parse(orderText);
-    console.log(orderResponse);
     if (orderResponse.status >= 400) {
         if (
             Object.hasOwn(response_obj, "userID") &&
