@@ -9,6 +9,13 @@ form {
   width: 80%;
 }
 
+#login-form{
+  width: fit-content;
+  padding: 1vw;
+  border-radius: 4vh;
+  background-color: aliceblue;
+}
+
 body {
   background-color: aliceblue;
   font-family: verdana, arial;

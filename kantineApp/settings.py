@@ -21,19 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-9@e#u@ku@*$_y@1o80$a0wjohz49t@!q&wotmcfsnw(l+v$!8*'
+SECRET_KEY = environ.get(
+    "DJANGO_KEY", 'django-insecure-9@e#u@ku@*$_y@1o80$a0wjohz49t@!q&wotmcfsnw(l+v$!8*')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-# DEBUG = environ.get("DEBUG", False)
-DEBUG = True
-# ALLOWED_HOSTS = []
-if DEBUG:
-    ALLOWED_HOSTS = ["*"]
-else:
-    # IMPORTANT: remove "*" before deployment and add frontend server
-    ALLOWED_HOSTS = ["*", "kantinekasse", "kantinekasse.impulsreha.local"]
-# ALLOWED_HOSTS = ['0.0.0.0']
+DEBUG = environ.get("DEBUG", False)
 
 
 # Application definition
@@ -64,15 +57,21 @@ MIDDLEWARE = [
 
 
 # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_ALL_ORIGINS = not environ.get("FRONTEND_DOMAIN", None)
+# CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
+
+ALLOWED_HOSTS = ["localhost", "Kantinekasse", "Kantinekasse.impulsreha.local",
+                 "127.0.0.1", "elbkantine.impuls-reha.de", environ.get("FRONTEND_DOMAIN", 'n')]
+
+SESSION_SAVE_EVERY_REQUEST = True
+
+# enable when we get https
+# CSRF_COOKIE_SECURE = False
+
 CORS_ALLOWED_ORIGINS = CSRF_TRUSTED_ORIGINS = [
-    'http://*',
-    'https://*'
-]
-CORS_ALLOWED_ORIGIN_REGEXES = CSRF_TRUSTED_ORIGINS_REGEXES = [
-    r"^http://\w+\..+$",
-]
+    "http://"+o for o in ALLOWED_HOSTS] + ["https://"+o for o in ALLOWED_HOSTS]
+print(CORS_ALLOWED_ORIGINS)
 
 ROOT_URLCONF = 'kantineApp.urls'
 

@@ -1,4 +1,4 @@
-const url = "http://kantinekasse.impulsreha.local:8000";
+const API_URL = "http://kantinekasse.impulsreha.local:8000";
 
 
 function showCustomConfirm(message) {
@@ -32,10 +32,41 @@ function showCustomConfirm(message) {
     });
 }
 
-async function submit_form(event){
+// --------- DOM helpers-------------------
+function setVisibility(elementId, visible) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.style.display = visible ? "flex" : "none";
+
+        // if we show a popup, disable re-focussing UserID input
+        toggleFocus(!visible);
+    }
+}
+
+function focusUserID() {
+    document.getElementById("userID").focus()
+}
+
+function toggleFocus(enabled) {
+    if (enabled) {
+        document.addEventListener("click", focusUserID);
+    } else {
+        document.removeEventListener("click", focusUserID);
+    }
+}
+
+// abomination to get a set cookie (required for csrf))
+function getCookie(name) {
+    let matches = document.cookie.match(new RegExp(
+        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+async function submit_form(event) {
     const e_userID = document.getElementById("userID");
     const e_menus = document.getElementsByClassName("menulabel")
-    const loader =document.getElementById("popup-loader")
+    const loader = document.getElementById("popup-loader")
     event.preventDefault();
 
     var formadata = new FormData(event.target);
@@ -51,41 +82,48 @@ async function submit_form(event){
     }
     e_userID.value = "";
 
-    for (let element of e_menus){
+    for (let element of e_menus) {
         // depends on the input being the only element!
         // to be safe we could use:
         // element.querySelector('input[type="radio"]:checked').checked=false
         // but thats way less readable and I dont think we will ever add more children.
-        
-        if(element.firstElementChild.checked){
-            element.firstElementChild.checked=false
+
+        if (element.firstElementChild.checked) {
+            element.firstElementChild.checked = false
             break;
         }
     }
 
     try {
-        
-        loader.style.display = "flex";
-        var orderResponse = await fetch(url + "/orders/", {
+
+        setVisibility("popup-loader", true)
+        var orderResponse = await fetch(`${API_URL}/orders/`, {
             method: "POST",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken")
+            },
             body: formadata,
-            signal: AbortSignal.timeout(2000)
-    
-        }).finally(()=>{loader.style.display = "none";});
+            signal: AbortSignal.timeout(5000),
+            credentials: "include",
+
+        }).finally(() => { setVisibility("popup-loader", false) });
     } catch (error) {
         var msg = error.message;
         if (error instanceof TypeError) {
             msg = "Request konnte nicht gesendet werden. Ist das Gerät mit dem internet verbunden?"
         } else if (error instanceof DOMException) {
             msg = "Verbindung mit dem server konnte nicht aufgebaut werden! (Timeout)."
-        } 
+        }
         alert(msg);
         console.log(error);
-        
         return;
     }
     var orderText = await orderResponse.text();
     var response_obj = JSON.parse(orderText);
+    if (orderResponse.status == 403) {    // unauthenticated
+        setVisibility("popup-login", true);
+        return
+    }
     if (orderResponse.status >= 400) {
         if (
             Object.hasOwn(response_obj, "userID") &&
@@ -94,21 +132,26 @@ async function submit_form(event){
             if (
                 await showCustomConfirm(
                     "Der Benutzer hat heute schon bestellt: " +
-                        response_obj["order"]["ordered_item"] +
-                        "€ + " +
-                        response_obj["order"]["tax"] +
-                        "% Steuer. Soll die Bestellung mit den neuen Daten korrigiert werden?"
+                    response_obj["order"]["ordered_item"] +
+                    "€ + " +
+                    response_obj["order"]["tax"] +
+                    "% Steuer. Soll die Bestellung mit den neuen Daten korrigiert werden?"
                 )
             ) {
                 var put_response = await fetch(
-                    url + response_obj["order"]["url"],
-                    { method: "PUT", body: formadata }
+                    API_URL + response_obj["order"]["url"],
+                    {
+                        method: "PUT",
+                        headers: {
+                            "X-CSRFToken": getCookie("csrftoken")
+                        },
+                        body: formadata,
+                        credentials: "include",
+                    }
                 );
-                /*if (put_response.status == 200) {
-                    alert("Erfolgreich");
-                } else {
+                if (!put_response.ok) {
                     alert(await put_response.text());
-                }*/
+                }
             }
         } else if (response_obj["userID"]) {
             alert(response_obj["userID"]);
@@ -122,14 +165,23 @@ async function submit_form(event){
 
 
 
-window.addEventListener("load", (event) => {
-    document.getElementById("form")
-        .addEventListener("submit", submit_form);
+// build menu, check auth-tokens
+window.addEventListener("load", async (event) => {
+    document.getElementById("form").addEventListener("submit", submit_form);
+    document.getElementById("login-form").addEventListener("submit", login);
 
-    document.addEventListener("click", () => {
-        document.getElementById("userID").focus();
-    });
-    
+    // check auth token, see Authentication functions
+    if (check_authenticated().then(() => {
+        // Hide the loader, show content
+        setVisibility("popup-loader", false);
+    })) {
+        setVisibility("popup-login", false);
+    } else {
+        setVisibility("popup-login", true);
+    }
+
+
+
 
     preise = [
         "3.00",
@@ -163,4 +215,62 @@ window.addEventListener("load", (event) => {
         form.appendChild(label);
         label.appendChild(input);
     });
+
+
 });
+
+
+
+
+// -------------------Authentication functions-----------------------------------------------------------
+// https://dev.to/wiljeder/secure-authentication-with-jwts-rotating-refresh-tokens-typescript-express-vanilla-js-4f41
+
+async function login(e) {
+    e.preventDefault();
+    const formdata = new FormData(e.currentTarget)
+    try {
+
+        const res = await fetch(`${API_URL}/auth/login/`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken")
+            },
+            body: formdata,
+        });
+
+        if (!res.ok) {
+            alert(await res.text())
+            return;
+        }
+        console.log("Logged in!");
+        setVisibility("popup-login", false);
+    } catch (error) {
+        console.error("Login failed:", error);
+        console.log("Login error occurred!");
+    }
+}
+
+
+async function check_authenticated(options) {
+    try {
+        let res = await fetch(`${API_URL}/auth/verify/`, {
+            method: "GET",
+            credentials: "include",
+            signal: AbortSignal.timeout(5000)
+        });
+
+        // If the token has expired or is invalid, try refreshing
+        if (!res.ok) {
+            setVisibility("popup-login", true);
+            return false
+        }
+        console.log("is logged in")
+    } catch (error) {
+        console.error("Error in check_authenticated:", error);
+        console.log("Error occurred while fetching secret.");
+        alert(error.text)
+        return false
+    }
+    return true
+}

@@ -66,11 +66,30 @@
 			</div>
 		</div>
 
-		<div
-			id="popup-loader"
-			class="popup-overlay popup-loader"
-			style="display: none">
+		<div id="popup-loader" class="popup-overlay popup-loader">
 			<div class="loader"></div>
+		</div>
+
+		<div
+			id="popup-login"
+			class="popup-overlay popup-login"
+			style="display: none">
+			<form id="login-form">
+				<h2>Login</h2>
+				<!-- <p id="message"></p> -->
+				<input
+					name="username"
+					id="username"
+					placeholder="Username"
+					required />
+				<input
+					id="password"
+					name="password"
+					type="password"
+					placeholder="Password"
+					required />
+				<button type="submit">Login</button>
+			</form>
 		</div>
 	</body>
 </html>
