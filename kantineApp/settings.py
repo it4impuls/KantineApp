@@ -65,6 +65,7 @@ ALLOWED_HOSTS = ["localhost", "kantinekasse", "kantinekasse.impulsreha.local",
                  "127.0.0.1", "elbkantine.impuls-reha.de", environ.get("FRONTEND_DOMAIN", 'n')]
 
 SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_SAMESITE = 'None'
 
 # enable when we get https
 # CSRF_COOKIE_SECURE = False
