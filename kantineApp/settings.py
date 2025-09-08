@@ -44,7 +44,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
+    # 'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -66,6 +66,7 @@ ALLOWED_HOSTS = ["localhost", "kantinekasse", "kantinekasse.impulsreha.local",
 
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_COOKIE_SAMESITE = 'None'
+
 
 # enable when we get https
 # CSRF_COOKIE_SECURE = False
