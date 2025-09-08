@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="de">
+	<head>
+		<link rel="stylesheet" href="style.css" />
+		<script src="{% static 'index.js' %}"></script>
+		<meta charset="UTF-8" />
+	</head>
+
+	<body>
+		<title>Mensamenü</title>
+		<!-- <h1>Mensa Menü</h1> -->
+		<form id="form">
+			<!-- Text Input -->
+			<label class="btn l_UID">
+				ID:
+				<input
+					type="text"
+					id="userID"
+					name="userID"
+					class="I_UID"
+					required
+					autofocus
+					autocomplete="off" />
+			</label>
+
+			<br /><br /><br />
+
+			<div id="menus" class="menus">
+				<!-- ordered_item Checkbox -->
+			</div>
+
+			<div class="footer">
+				<label class="btn tax"
+					>7%
+					<input
+						type="radio"
+						name="tax"
+						value="7"
+						class="input_invis" />
+				</label>
+
+				<label class="btn tax"
+					>19%
+					<input
+						type="radio"
+						name="tax"
+						value="19"
+						class="input_invis"
+						checked />
+				</label>
+				<!-- Submit Button -->
+				<button type="submit" class="submit btn">OK</button>
+			</div>
+		</form>
+
+		<div
+			id="popup-query"
+			class="popup-overlay popup-query"
+			style="display: none">
+			<div class="popup-box">
+				<p id="popup-message">Möchtest du fortfahren?</p>
+				<div class="popup-buttons">
+					<button id="popup-yes">Ja</button>
+					<button id="popup-no">Nein</button>
+				</div>
+			</div>
+		</div>
+
+		<div id="popup-loader" class="popup-overlay popup-loader">
+			<div class="loader"></div>
+		</div>
+
+		<div
+			id="popup-login"
+			class="popup-overlay popup-login"
+			style="display: none">
+			<form id="login-form">
+				<h2>Login</h2>
+				<!-- <p id="message"></p> -->
+				<input
+					name="username"
+					id="username"
+					placeholder="Username"
+					required />
+				<input
+					id="password"
+					name="password"
+					type="password"
+					placeholder="Password"
+					required />
+				<button type="submit">Login</button>
+			</form>
+		</div>
+	</body>
+</html>

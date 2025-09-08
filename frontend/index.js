@@ -77,9 +77,9 @@ function do_fetch(addr, method, body) {
         headers: {
             "X-CSRFToken": getCookie("csrftoken")
         },
-        body: body,
+        body: method == "POST" ? body : undefined,
         signal: AbortSignal.timeout(5000),
-        credentials: "include",
+        // credentials: "POST" ? "include" : undefined
 
     })
 }
@@ -90,14 +90,14 @@ async function submit_form(event) {
     const loader = document.getElementById("popup-loader")
     event.preventDefault();
 
-    var formadata = new FormData(event.target);
-    if (!formadata.get("userID")) {
+    var formdata = new FormData(event.target);
+    if (!formdata.get("userID")) {
         alert("keine ID-Nummer");
         return;
-    } else if (!formadata.get("ordered_item")) {
+    } else if (!formdata.get("ordered_item")) {
         alert("kein Menü");
         return;
-    } else if (!formadata.get("tax")) {
+    } else if (!formdata.get("tax")) {
         alert("keine Steuer");
         return;
     }
@@ -125,6 +125,8 @@ async function submit_form(event) {
             msg = "Request konnte nicht gesendet werden. Ist das Gerät mit dem internet verbunden?"
         } else if (error instanceof DOMException) {
             msg = "Verbindung mit dem server konnte nicht aufgebaut werden! (Timeout)."
+        } else {
+            msg = "unknown error: " + msg
         }
         alert(msg);
         console.log(error);
@@ -157,7 +159,7 @@ async function submit_form(event) {
                         headers: {
                             "X-CSRFToken": getCookie("csrftoken")
                         },
-                        body: formadata,
+                        body: formdata,
                         credentials: "include",
                     }
                 );
@@ -241,10 +243,12 @@ async function login(e) {
     e.preventDefault();
     const formdata = new FormData(e.currentTarget)
     try {
-        getCRSF()
+        // getCSRF()
         const res = await do_fetch("auth/login", "POST", formdata)
 
         if (!res.ok) {
+            console.log("error while logging in")
+            console.log(res)
             alert(await res.text())
             return;
         }
@@ -256,11 +260,10 @@ async function login(e) {
     }
 }
 
-async function getCRSF() {
+async function getCSRF() {
     try {
-        let res = await fetch(`${API_URL}/crsf`, {
+        let res = await fetch(`${API_URL}/csrf/`, {
             method: "GET",
-            credentials: "include",
             signal: AbortSignal.timeout(5000)
         });
 
@@ -285,8 +288,8 @@ async function getCRSF() {
 
 async function check_authenticated(options) {
     try {
-        getCRSF()
-        let res = await do_fetch("auth/verify", "GET");
+        getCSRF()
+        let res = await do_fetch("auth/verify", "GET", {});
 
         // If the token has expired or is invalid, try refreshing
         if (!res.ok) {

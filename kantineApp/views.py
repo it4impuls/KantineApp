@@ -25,6 +25,9 @@ def get_csrf_token(request):
     return JsonResponse({'csrfToken': csrf_token})
 
 
-@login_required
+# @login_required
 def is_loggedin(request):
-    return HttpResponse("ok")
+    if request.user.is_authenticated:
+        return HttpResponse("ok")
+    else:
+        return HttpResponse("Not authenticated", 403)

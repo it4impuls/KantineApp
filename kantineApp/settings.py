@@ -40,11 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'corsheaders'
+    # 'corsheaders'
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
+    # 'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -60,6 +60,7 @@ MIDDLEWARE = [
 # CORS_ALLOW_ALL_ORIGINS = not environ.get("FRONTEND_DOMAIN", None)
 # CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_SECURE = False    # erlaubt HTTP
 
 ALLOWED_HOSTS = ["localhost", "kantinekasse", "kantinekasse.impulsreha.local",
                  "127.0.0.1", "elbkantine.impuls-reha.de"]

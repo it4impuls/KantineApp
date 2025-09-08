@@ -43,6 +43,10 @@ class UploadFileForm(forms.Form):
                            validators=[FileExtensionValidator(["csv"], _("nur csv-Dateien sind erlaubt"))])
 
 
+def frontend(request):
+    return render(request, "frontend/index.html")
+
+
 def get_barcode(pk) -> BytesIO:
     writer = SVGWriter()
     options = {"module_width": 0.2, "module_height": 3,
