@@ -65,7 +65,7 @@ ALLOWED_HOSTS = ["localhost", "kantinekasse", "kantinekasse.impulsreha.local",
                  "127.0.0.1", "elbkantine.impuls-reha.de"]
 
 SESSION_SAVE_EVERY_REQUEST = True
-SESSION_COOKIE_SAMESITE = 'None'
+# SESSION_COOKIE_SAMESITE = 'None'
 
 
 # enable when we get https
@@ -74,6 +74,9 @@ SESSION_COOKIE_SAMESITE = 'None'
 CORS_ALLOWED_ORIGINS = CSRF_TRUSTED_ORIGINS = [
     "http://"+o for o in ALLOWED_HOSTS] + ["https://"+o for o in ALLOWED_HOSTS]
 print(CORS_ALLOWED_ORIGINS)
+print()
+print(CSRF_TRUSTED_ORIGINS)
+print()
 
 ROOT_URLCONF = 'kantineApp.urls'
 

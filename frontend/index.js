@@ -63,6 +63,27 @@ function getCookie(name) {
     return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
+function setCookie(cname, cvalue, exhrs) {
+    const d = new Date();
+    d.setTime(d.getTime() + (exhrs * 60 * 60 * 1000));
+    let expires = "expires=" + d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+// fetch with crsf and session
+function do_fetch(addr, method, body) {
+    return fetch(`${API_URL}/${addr}/`, {
+        method: method,
+        headers: {
+            "X-CSRFToken": getCookie("csrftoken")
+        },
+        body: body,
+        signal: AbortSignal.timeout(5000),
+        credentials: "include",
+
+    })
+}
+
 async function submit_form(event) {
     const e_userID = document.getElementById("userID");
     const e_menus = document.getElementsByClassName("menulabel")
@@ -97,16 +118,7 @@ async function submit_form(event) {
     try {
 
         setVisibility("popup-loader", true)
-        var orderResponse = await fetch(`${API_URL}/orders/`, {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": getCookie("csrftoken")
-            },
-            body: formadata,
-            signal: AbortSignal.timeout(5000),
-            credentials: "include",
-
-        }).finally(() => { setVisibility("popup-loader", false) });
+        var orderResponse = await do_fetch("orders", "POST", formdata).finally(() => { setVisibility("popup-loader", false) });
     } catch (error) {
         var msg = error.message;
         if (error instanceof TypeError) {
@@ -229,15 +241,8 @@ async function login(e) {
     e.preventDefault();
     const formdata = new FormData(e.currentTarget)
     try {
-
-        const res = await fetch(`${API_URL}/auth/login/`, {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "X-CSRFToken": getCookie("csrftoken")
-            },
-            body: formdata,
-        });
+        getCRSF()
+        const res = await do_fetch("auth/login", "POST", formdata)
 
         if (!res.ok) {
             alert(await res.text())
@@ -251,14 +256,37 @@ async function login(e) {
     }
 }
 
-
-async function check_authenticated(options) {
+async function getCRSF() {
     try {
-        let res = await fetch(`${API_URL}/auth/verify/`, {
+        let res = await fetch(`${API_URL}/crsf`, {
             method: "GET",
             credentials: "include",
             signal: AbortSignal.timeout(5000)
         });
+
+        if (res.ok) {
+            console.log(res)
+            const crsf = await res.body["csrfToken"]
+
+            setCookie("csrftoken", crsf, 200)
+            return crsf
+        } else {
+            console.log("error retrieving crsf: " + await res.body())
+            return
+        }
+        console.log("is logged in")
+    } catch (error) {
+        console.error("Error retrieving crsf:", error);
+        alert(error.text)
+        return false
+    }
+    return true
+}
+
+async function check_authenticated(options) {
+    try {
+        getCRSF()
+        let res = await do_fetch("auth/verify", "GET");
 
         // If the token has expired or is invalid, try refreshing
         if (!res.ok) {

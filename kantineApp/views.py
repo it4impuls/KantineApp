@@ -3,6 +3,8 @@ from django.http.response import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
+from django.middleware.csrf import get_token
+from django.http import JsonResponse
 
 
 @csrf_exempt
@@ -16,6 +18,11 @@ def login(request):
         return HttpResponse("You're logged in.")
     else:
         return HttpResponse("Your username and password didn't match.")
+
+
+def get_csrf_token(request):
+    csrf_token = get_token(request)
+    return JsonResponse({'csrfToken': csrf_token})
 
 
 @login_required
