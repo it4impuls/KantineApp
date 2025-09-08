@@ -61,7 +61,7 @@ MIDDLEWARE = [
 # CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
-ALLOWED_HOSTS = ["localhost", "Kantinekasse", "Kantinekasse.impulsreha.local",
+ALLOWED_HOSTS = ["localhost", "kantinekasse", "kantinekasse.impulsreha.local",
                  "127.0.0.1", "elbkantine.impuls-reha.de", environ.get("FRONTEND_DOMAIN", 'n')]
 
 SESSION_SAVE_EVERY_REQUEST = True
