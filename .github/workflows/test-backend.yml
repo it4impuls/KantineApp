@@ -1,7 +1,7 @@
 name: Test backend
 on:
   pull_request:
-    types: [opened, edited, synchronize]
+    # types: [opened, edited, synchronize]
   workflow_dispatch:
 concurrency:
   group: backend-test-${{ github.event.pull_request.number || github.ref_name }}
