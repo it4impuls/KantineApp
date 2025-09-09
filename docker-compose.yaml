@@ -13,7 +13,7 @@ services:
         DB_ADDR: ${DB_ADDR}
         DB_PORT: ${DB_PORT}
         DB_ENGINE: ${DB_ENGINE}
-        DEBUG: False
+        DEBUG: ${DEBUG}
     ports:
       - "8000:8080"
     
@@ -25,7 +25,7 @@ services:
     env_file:
       - .env
     environment:
-      - DEBUG=False    
+      - DEBUG=1    
 
   frontend:
     
