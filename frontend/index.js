@@ -1,4 +1,4 @@
-const API_URL = "http://213.239.215.91";
+const API_URL = "http://kantinekasse.impulsreha.local:8000";
 
 
 function showCustomConfirm(message) {

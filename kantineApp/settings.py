@@ -26,8 +26,8 @@ SECRET_KEY = environ.get(
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-# DEBUG = environ.get("DEBUG", False)
-DEBUG = True
+DEBUG = environ.get("DEBUG", "0") == "1"
+# DEBUG = True
 
 
 # Application definition
