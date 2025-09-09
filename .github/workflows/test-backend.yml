@@ -1,6 +1,6 @@
 name: Test backend
 on:
-  pull_request:
+  # pull_request:
     # types: [opened, edited, synchronize]
   workflow_dispatch:
 concurrency:
