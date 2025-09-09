@@ -1,4 +1,4 @@
-const API_URL = "http://w014103a.kasserver.com";
+const API_URL = "http://213.239.215.91";
 
 
 function showCustomConfirm(message) {
