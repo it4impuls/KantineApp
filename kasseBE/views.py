@@ -25,7 +25,7 @@ from barcode import Code128
 from barcode.writer import SVGWriter
 from django.http.response import HttpResponse,  FileResponse
 from rest_framework.validators import UniqueForDateValidator, qs_exists, ValidationError
-from rest_framework.decorators import action
+from rest_framework.decorators import action, authentication_classes, permission_classes, api_view
 from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -41,6 +41,10 @@ from django.utils.html import format_html
 class UploadFileForm(forms.Form):
     file = forms.FileField(widget=forms.FileInput(attrs={'accept': 'text/csv'}),
                            validators=[FileExtensionValidator(["csv"], _("nur csv-Dateien sind erlaubt"))])
+
+
+def frontend(request):
+    return render(request, "frontend/index.html")
 
 
 def get_barcode(pk) -> BytesIO:
@@ -79,6 +83,9 @@ def handle_upload(f: InMemoryUploadedFile):
     return ret
 
 
+@api_view(['GET', 'POST'])
+# @authentication_classes([SessionAuthentication, BasicAuthentication])
+# @permission_classes([IsAuthenticated])
 def add_users_from_file(request):
     if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
@@ -93,21 +100,6 @@ def add_users_from_file(request):
     else:
         form = UploadFileForm()
     return render(request, "kasseBE/add_users.html", {"form": form})
-
-
-def ordered_today(self, pk):
-    obj = get_object_or_404(User, code=pk)
-    date_field_name = 'order_date'
-    filter_kwargs = {}
-    today = now()
-    filter_kwargs['%s__day' % date_field_name] = today.day
-    filter_kwargs['%s__month' % date_field_name] = today.month
-    filter_kwargs['%s__year' % date_field_name] = today.year
-    cal = obj.order_set.all().filter(**filter_kwargs)
-    if (cal):
-        OrderSerializer(cal.first()).data
-    else:
-        return {}
 
 
 class DateValidator(UniqueForDateValidator):
