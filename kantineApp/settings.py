@@ -26,7 +26,8 @@ SECRET_KEY = environ.get(
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = environ.get("DEBUG", False)
+# DEBUG = environ.get("DEBUG", False)
+DEBUG = True
 
 
 # Application definition
@@ -40,11 +41,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    # 'corsheaders'
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
-    # 'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -63,7 +64,7 @@ CORS_ALLOW_CREDENTIALS = True
 CSRF_COOKIE_SECURE = False    # erlaubt HTTP
 
 ALLOWED_HOSTS = ["localhost", "kantinekasse", "kantinekasse.impulsreha.local",
-                 "127.0.0.1", "elbkantine.impuls-reha.de"]
+                 "127.0.0.1", "elbkantine.impuls-reha.de", "213.239.215.91"]
 
 SESSION_SAVE_EVERY_REQUEST = True
 # SESSION_COOKIE_SAMESITE = 'None'
@@ -163,6 +164,11 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 STATIC_ROOT = path.join(BASE_DIR, 'static')
 STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+    # BASE_DIR / "static",
+    BASE_DIR / "frontend"
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

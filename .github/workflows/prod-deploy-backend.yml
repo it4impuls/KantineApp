@@ -7,6 +7,7 @@ on:
     - kantineApp/**
     - kasseBE/**
     - .github/workflows/prod-deploy-backend.yml
+    - Dockerfile
   workflow_dispatch:
 
 env:

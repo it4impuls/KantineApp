@@ -119,6 +119,7 @@ async function submit_form(event) {
 
         setVisibility("popup-loader", true)
         var orderResponse = await do_fetch("orders", "POST", formdata).finally(() => { setVisibility("popup-loader", false) });
+
     } catch (error) {
         var msg = error.message;
         if (error instanceof TypeError) {
@@ -133,6 +134,7 @@ async function submit_form(event) {
         return;
     }
     var orderText = await orderResponse.text();
+    console.log(orderText)
     var response_obj = JSON.parse(orderText);
     if (orderResponse.status == 403) {    // unauthenticated
         setVisibility("popup-login", true);

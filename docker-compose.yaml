@@ -15,7 +15,7 @@ services:
         DB_ENGINE: ${DB_ENGINE}
         DEBUG: False
     ports:
-      - "8000:80"
+      - "8000:8080"
     
     volumes:
       # - ~/logs/:/var/log/gunicorn/
