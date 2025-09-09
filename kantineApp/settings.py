@@ -64,7 +64,7 @@ CORS_ALLOW_CREDENTIALS = True
 CSRF_COOKIE_SECURE = False    # erlaubt HTTP
 
 ALLOWED_HOSTS = ["localhost", "kantinekasse", "kantinekasse.impulsreha.local",
-                 "127.0.0.1", "elbkantine.impuls-reha.de"]
+                 "127.0.0.1", "elbkantine.impuls-reha.de", "213.239.215.91"]
 
 SESSION_SAVE_EVERY_REQUEST = True
 # SESSION_COOKIE_SAMESITE = 'None'
