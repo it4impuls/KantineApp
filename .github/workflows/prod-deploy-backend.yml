@@ -74,7 +74,7 @@ jobs:
       - name: Docker rm
         run: docker rm ${{ env.CONTAINER_NAME }} || echo "no containers found, none removed"
       - name: Docker run
-        run: docker run -d -p 8080:8000
+        run: docker run -d -p 8080:80
           -e DB_NAME=${{ vars.DB_NAME }}
           -e DB_USER=${{ vars.DB_USER }}
           -e DB_PASSWORD=${{ secrets.DB_PASSWORD }}

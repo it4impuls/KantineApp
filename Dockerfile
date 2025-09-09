@@ -29,7 +29,7 @@ WORKDIR $WORKDIR
 COPY . .
 RUN pip install -r requirements.txt && pip install gunicorn
 
-EXPOSE 8000
+EXPOSE 80
 
 # RUN python manage.py makemigrations --no-input
 # RUN python manage.py migrate --no-input
