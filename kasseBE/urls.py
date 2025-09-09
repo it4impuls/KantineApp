@@ -10,5 +10,5 @@ router.register(r'orders', OrderViewSet)
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path('', frontend),
+    path('', include(router.urls)),
 ]
