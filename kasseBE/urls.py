@@ -1,6 +1,6 @@
 from rest_framework import routers
 from django.urls import include, path
-from .views import UserViewSet, OrderViewSet, frontend
+from .views import UserViewSet, OrderViewSet, frontend, add_users_from_file
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
@@ -11,4 +11,5 @@ router.register(r'orders', OrderViewSet)
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('', include(router.urls)),
+    path("add_users/", add_users_from_file, name="add users")
 ]

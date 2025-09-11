@@ -83,7 +83,7 @@ def handle_upload(f: InMemoryUploadedFile):
     return ret
 
 
-@api_view(['GET', 'POST'])
+# @api_view(['GET', 'POST'])
 # @authentication_classes([SessionAuthentication, BasicAuthentication])
 # @permission_classes([IsAuthenticated])
 def add_users_from_file(request):
