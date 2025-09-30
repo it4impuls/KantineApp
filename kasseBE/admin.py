@@ -171,7 +171,9 @@ def export_orders(modeladmin, request, queryset):
 class OrderAdmin(admin.ModelAdmin):
     search_fields = list_display = list_display_links = [
         "order_date", "userID__code", "ordered_item", "tax"]
-    list_filter = (('order_date', CustomDateFieldListFilter), UIDFilter)
+    list_filter = (('order_date', CustomDateFieldListFilter),
+                   UIDFilter,
+                   'ordered_item', 'tax')
     actions = [export_orders]
     # change_list_template = "admin/order_change_list.html"
 
