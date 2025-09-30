@@ -139,6 +139,7 @@ class OrderSerializer(serializers.ModelSerializer):
             )
         ]
     order_date = serializers.DateTimeField(read_only=True, default=now)
+    ordered_item = serializers.DecimalField(5, 2, localize=True)
 
 
 class OrderViewSet(viewsets.ModelViewSet):

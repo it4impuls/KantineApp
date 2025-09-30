@@ -144,11 +144,7 @@ def export_orders(modeladmin, request, queryset):
     if not queryset:
         return
 
-    data = []
-    for entry in queryset:
-        order = OrderSerializer(entry).data
-        order['ordered_item'] = order['ordered_item'].replace(".", ",")
-        data.append(order)
+    data = [OrderSerializer(a).data for a in queryset]
     if len(data) == 0:
         return
     headers = data[0].keys()
