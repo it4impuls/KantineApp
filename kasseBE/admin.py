@@ -86,7 +86,7 @@ class CustomDateFieldListFilter(DateFieldListFilter):
         ),)
 
 
-@admin.action(description=_("Export Barcodes als .zip"))
+@admin.action(description=_("Export barcodes as .zip"))
 def export_user_Barcodes(modeladmin, request, queryset):
     response = HttpResponse(content_type='application/zip')
     response['Content-Disposition'] = 'attachment; filename="Barcodes.zip"'
@@ -107,7 +107,7 @@ def export_user_Barcodes(modeladmin, request, queryset):
     return response
 
 
-@admin.action(description=_("Export Auswahl als csv"))
+@admin.action(description=_("Export selection as csv"))
 def export_users(modeladmin, request, queryset):
     if not queryset:
         return
@@ -139,7 +139,7 @@ class UserAdmin(admin.ModelAdmin):
         return format_html('<img src="/{}/{}/{}" />', "users", obj.pk, "barcode")
 
 
-@admin.action(description=_("Export Auswahl als csv"))
+@admin.action(description=_("Export selection as csv"))
 def export_orders(modeladmin, request, queryset):
     if not queryset:
         return

@@ -40,7 +40,7 @@ from django.utils.html import format_html
 
 class UploadFileForm(forms.Form):
     file = forms.FileField(widget=forms.FileInput(attrs={'accept': 'text/csv'}),
-                           validators=[FileExtensionValidator(["csv"], _("nur csv-Dateien sind erlaubt"))])
+                           validators=[FileExtensionValidator(["csv"], _("only csv-Files are permitted"))])
 
 
 def frontend(request):
@@ -104,7 +104,6 @@ def add_users_from_file(request):
 
 class DateValidator(UniqueForDateValidator):
     message = _("The user already ordered today. ")
-    message = "Der Kunde hat heute bereits bestellt."
 
     # überschreiben von UniqueForDateValidator::BaseUniqueForValidator::__call__ da wir die order in der response haben wollen.
     # theoretisch könnten wir nur die message ändern, aber das wäre schwieriger im frontend zu parsen.

@@ -1,11 +1,79 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.0.1\n"
+
+#: kasseBE/admin.py:81
+msgid "This week"
+msgstr "Diese Woche"
+
+#: kasseBE/admin.py:89
+msgid "Export barcodes as .zip"
+msgstr "Exportiere barcodes als .zip"
+
+#: kasseBE/admin.py:110 kasseBE/admin.py:142
+msgid "Export selection as csv"
+msgstr "Exportiere Auswahl als csv"
+
+#: kasseBE/templates/admin/input_filter.html:3
+#, python-format
+msgid " By %(filter_title)s "
+msgstr " Per %(filter_title)s "
+
+#: kasseBE/templates/admin/input_filter.html:18
+msgid "Remove"
+msgstr "Entfernen"
+
+#: kasseBE/templates/admin/order_change_list.html:4
+msgid "Error:"
+msgstr ""
+
+#: kasseBE/templates/admin/order_change_list.html:33
+msgid "Home"
+msgstr ""
+
+#: kasseBE/templates/admin/order_change_list.html:53
+msgid "Please correct the error below."
+msgid_plural "Please correct the errors below."
+msgstr[0] "Bitte den folgenden Fehler beheben. "
+msgstr[1] "Bitte die folgenden Fehler beheben. "
+
+#: kasseBE/templates/admin/order_change_list.html:78
+msgid "Filter"
+msgstr ""
+
+#: kasseBE/templates/admin/order_change_list.html:82
+msgid "Hide counts"
+msgstr "Anzahl Verstecken"
+
+#: kasseBE/templates/admin/order_change_list.html:83
+msgid "Show counts"
+msgstr "Anzahl Anzeigen"
+
+#: kasseBE/templates/admin/order_change_list.html:86
+msgid "Clear all filters"
+msgstr "Alle Filter entfernen"
+
+#: kasseBE/views.py:43
+msgid "only csv-Files are permitted"
+msgstr "Nur csv-Dateien sind erlaubt"
+
+#: kasseBE/views.py:106
+msgid "The user already ordered today. "
+msgstr "Der Kunde hat heute bereits bestellt. "
+
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
-#: kasseBE/models.py:24
-msgid "User is not active"
-msgstr "Der Benutzer ist nicht Aktiv"
-
-#: kasseBE/views.py:61
-msgid "The user already ordered today. "
-msgstr "Der Kunde hat heute bereits bestellt. "
+#~ msgid "User is not active"
+#~ msgstr "Der Benutzer ist nicht Aktiv"
