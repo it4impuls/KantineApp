@@ -1,7 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-30 06:16-0500\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -23,6 +24,34 @@ msgstr "Exportiere barcodes als .zip"
 #: kasseBE/admin.py:110 kasseBE/admin.py:142
 msgid "Export selection as csv"
 msgstr "Exportiere Auswahl als csv"
+
+#: kasseBE/models.py:27
+msgid "Costumer"
+msgstr "Kunde"
+
+#: kasseBE/models.py:29
+msgid "Costumers"
+msgstr "Kunden"
+
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+#: kasseBE/models.py:45
+msgid "User is not active"
+msgstr "Der Benutzer ist nicht Aktiv"
+
+#: kasseBE/models.py:49
+msgid "Code no longer valid"
+msgstr "Der Code ist abgelaufen"
+
+#: kasseBE/models.py:66
+msgid "Order"
+msgstr "Bestellung"
+
+#: kasseBE/models.py:67
+msgid "Orders"
+msgstr "Bestellungen"
 
 #: kasseBE/templates/admin/input_filter.html:3
 #, python-format
@@ -70,10 +99,3 @@ msgstr "Nur csv-Dateien sind erlaubt"
 #: kasseBE/views.py:106
 msgid "The user already ordered today. "
 msgstr "Der Kunde hat heute bereits bestellt. "
-
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-#
-#~ msgid "User is not active"
-#~ msgstr "Der Benutzer ist nicht Aktiv"

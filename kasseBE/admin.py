@@ -175,7 +175,7 @@ class OrderAdmin(admin.ModelAdmin):
                    UIDFilter,
                    'ordered_item', 'tax')
     actions = [export_orders]
-    show_facets = admin.ShowFacets.ALWAYS
+    # show_facets = admin.ShowFacets.ALWAYS
     # change_list_template = "admin/order_change_list.html"
 
 

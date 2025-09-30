@@ -24,8 +24,9 @@ def in4yrs() -> date:
 
 class User(models.Model):
     class Meta:
-        verbose_name = 'Kunde'
-        verbose_name_plural = 'Kunde'
+        verbose_name = _('Costumer')
+        # 'Kunde'
+        verbose_name_plural = _('Costumers')
     firstname = models.CharField(max_length=50)
     lastname = models.CharField(max_length=50)
     code = models.AutoField(primary_key=True)
@@ -38,13 +39,15 @@ def is_active(value: User | int):
         user = get_object_or_404(User, code=value)
     except Exception as e:
         user = value
-        ...
     if (not user.active):
         # _("User is not active"))
-        raise serializers.ValidationError("Der Benutzer ist nicht Aktiv")
+        raise serializers.ValidationError(
+            _("User is not active"))
+    #
     if (user.enddate < date.today()):
         raise serializers.ValidationError(
-            "Der Code ist abgelaufen.")
+            _("Code no longer valid")
+        )
 
 
 # class OrderBill(models.Model):
@@ -60,8 +63,8 @@ def is_active(value: User | int):
 
 class Order(models.Model):
     class Meta:
-        verbose_name = 'Bestellung'
-        verbose_name_plural = 'Bestellungen'
+        verbose_name = _('Order')  # 'Bestellung'
+        verbose_name_plural = _('Orders')  # 'Bestellungen'
 
     order_date = models.DateTimeField(auto_now=True)
     userID = models.ForeignKey(User, on_delete=models.PROTECT,
