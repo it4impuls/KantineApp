@@ -74,8 +74,14 @@ class CustomDateFieldListFilter(DateFieldListFilter):
             today = now.replace(hour=0, minute=0, second=0, microsecond=0)
         else:  # field is a models.DateField
             today = now.date()
+        # Monday=0, Sunday=6
         week_start = today - timedelta(days=today.weekday())
         week_end = week_start + timedelta(days=6)
+
+        # last day last month
+        last_month_end = today-timedelta(days=today.day)
+        last_month_start = last_month_end.replace(day=1)
+
         super().__init__(field, request, params, model, model_admin, field_path)
         self.links += ((
             _("This week"),
@@ -83,7 +89,13 @@ class CustomDateFieldListFilter(DateFieldListFilter):
                 self.lookup_kwarg_since: week_start,
                 self.lookup_kwarg_until: week_end,
             },
-        ),)
+        ), (
+            _("Last month"),
+            {
+                self.lookup_kwarg_since: last_month_start,
+                self.lookup_kwarg_until: last_month_end,
+            },
+        ))
 
 
 @admin.action(description=_("Export barcodes as .zip"))
