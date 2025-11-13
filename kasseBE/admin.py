@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import DateFieldListFilter
 from django.utils.html import format_html
@@ -98,16 +99,11 @@ class CustomDateFieldListFilter(DateFieldListFilter):
         ))
 
 
-def changeDataEncoding(data: list, encoding: str):
-    for entry in data:
-        for key in entry:
-            assert type(key) == str
-            if (type(entry[key]) == str):
-
-                bytes = entry[key].replace(
-                    '\ufeff', '').encode()
-                entry[key] = bytes.decode(encoding)
-    return data
+def changeStrEncoding(entry: dict, encoding: str):
+    # hacky solution to unclean db data
+    stripped = entry.replace('\ufeff', '')
+    return stripped.encode(
+        settings.DEFAULT_CHARSET).decode(encoding)
 
 
 @admin.action(description=_("Export barcodes as .zip"))
@@ -140,18 +136,18 @@ def export_users(modeladmin, request, queryset):
     if len(data) == 0:
         return
     headers = data[0].keys()
-    response = HttpResponse(content_type='text/csv; charset=latin-1')
+    response = HttpResponse(
+        content_type='text/csv; charset='+settings.EXPORT_ENCODING)
     response['Content-Disposition'] = 'attachment; filename="Teilnehmer.csv"'
     wr = DictWriter(response, headers, dialect='excel',
                     delimiter=';', lineterminator='\r\n')
-    try:
-        wr.writeheader()
-        wr.writerows(data)
-    except UnicodeEncodeError as e:
-        changeDataEncoding(data, 'latin1')
-        wr.writeheader()
-        wr.writerows(data)
-        ...
+    for line in data:
+        try:
+            wr.writerow(line)
+        except UnicodeEncodeError as e:
+            response.write(changeStrEncoding(e.object, e.encoding))
+        except Exception as e:
+            ...
     return response
 
 
@@ -177,21 +173,20 @@ def export_orders(modeladmin, request, queryset):
     if len(data) == 0:
         return
     headers = data[0].keys()
-    response = HttpResponse(content_type='text/csv; charset=latin-1')
+    response = HttpResponse(
+        content_type='text/csv; charset='+settings.EXPORT_ENCODING)
     response['Content-Disposition'] = 'attachment; filename="Orders.csv"'
     wr = DictWriter(response, headers, dialect='excel',
                     delimiter=';', lineterminator='\r\n')
     # required for non-dict writing
     w = writer(response, dialect='excel', delimiter=';', lineterminator='\r\n')
     # w.writerow(("Bestellungs ID", "Kunde", "Zeit", "Menu", "Steuer"))
-    try:
-        wr.writeheader()
-        wr.writerows(data)
-
-    except UnicodeEncodeError:
-        changeDataEncoding(data, 'latin-1')
-        wr.writeheader()
-        wr.writerows(data)
+    wr.writeheader()
+    for line in data:
+        try:
+            wr.writerow(line)
+        except UnicodeEncodeError as e:
+            response.write(changeStrEncoding(e.object, e.encoding))
 
     # write some extra data, IE sums
     w.writerow("")
@@ -224,40 +219,3 @@ class OrderInline(admin.TabularInline):
     readonly_fields = ["user", "order_date", "ordered_item", "tax"]
     exclude = ["userID"]
     extra = 1
-
-
-# def calc_total(obj: OrderBill):
-#     return sum(order.ordered_item for order in obj.order_set.all())
-
-
-# def calc_total_taxed(obj: OrderBill):
-#     return sum(order.ordered_item+(order.ordered_item*order.tax/100) for order in obj.order_set.all())
-
-
-# @admin.register(OrderBill)
-# class OrderBillAdmin(admin.ModelAdmin):
-
-#     search_fields = list_display = list_display_links = readonly_fields = [
-#         'month', 'total', 'total_with_tax']
-#     ordering = ('-month',)
-#     inlines = [OrderInline]
-
-#     @admin.display(description="total")
-#     def total(self, obj: OrderBill):
-#         today = date.today()
-#         if obj.month < today:
-#             if not obj.cached_total:
-#                 obj.cached_total = calc_total(obj)
-#                 obj.save()
-#             return obj.cached_total
-#         return calc_total(obj)
-
-#     @admin.display(description="total with tax")
-#     def total_with_tax(self, obj: OrderBill):
-#         today = date.today()
-#         if obj.month < today:
-#             if not obj.cached_taxed_total:
-#                 obj.cached_taxed_total = calc_total_taxed(obj)
-#                 obj.save()
-#             return obj.cached_taxed_total
-#         return calc_total_taxed(obj)
