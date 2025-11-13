@@ -98,6 +98,18 @@ class CustomDateFieldListFilter(DateFieldListFilter):
         ))
 
 
+def changeDataEncoding(data: list, encoding: str):
+    for entry in data:
+        for key in entry:
+            assert type(key) == str
+            if (type(entry[key]) == str):
+
+                bytes = entry[key].replace(
+                    '\ufeff', '').encode()
+                entry[key] = bytes.decode(encoding)
+    return data
+
+
 @admin.action(description=_("Export barcodes as .zip"))
 def export_user_Barcodes(modeladmin, request, queryset):
     response = HttpResponse(content_type='application/zip')
@@ -124,24 +136,29 @@ def export_users(modeladmin, request, queryset):
     if not queryset:
         return
 
-    data = [{"Vorname": user.firstname, "Nachname": user.lastname}
-            for user in queryset if type(user) == User]
+    data = [UserSerializer(a).data for a in queryset]
     if len(data) == 0:
         return
     headers = data[0].keys()
-    response = HttpResponse(content_type='text/csv')
+    response = HttpResponse(content_type='text/csv; charset=latin-1')
     response['Content-Disposition'] = 'attachment; filename="Teilnehmer.csv"'
     wr = DictWriter(response, headers, dialect='excel',
                     delimiter=';', lineterminator='\r\n')
-    wr.writeheader()
-    wr.writerows(data)
+    try:
+        wr.writeheader()
+        wr.writerows(data)
+    except UnicodeEncodeError as e:
+        changeDataEncoding(data, 'latin1')
+        wr.writeheader()
+        wr.writerows(data)
+        ...
     return response
 
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     search_fields = ["firstname", "lastname", "code"]
-    list_display = ["firstname", "lastname", "code", "active", "enddate"]
+    list_display = ["firstname", "lastname", "code", "active"]
     readonly_fields = ["barcode"]
     actions = [export_user_Barcodes, export_users]
 
@@ -160,15 +177,23 @@ def export_orders(modeladmin, request, queryset):
     if len(data) == 0:
         return
     headers = data[0].keys()
-    response = HttpResponse(content_type='text/csv')
+    response = HttpResponse(content_type='text/csv; charset=latin-1')
     response['Content-Disposition'] = 'attachment; filename="Orders.csv"'
     wr = DictWriter(response, headers, dialect='excel',
                     delimiter=';', lineterminator='\r\n')
     # required for non-dict writing
     w = writer(response, dialect='excel', delimiter=';', lineterminator='\r\n')
     # w.writerow(("Bestellungs ID", "Kunde", "Zeit", "Menu", "Steuer"))
-    wr.writeheader()
-    wr.writerows(data)
+    try:
+        wr.writeheader()
+        wr.writerows(data)
+
+    except UnicodeEncodeError:
+        changeDataEncoding(data, 'latin-1')
+        wr.writeheader()
+        wr.writerows(data)
+
+    # write some extra data, IE sums
     w.writerow("")
     w.writerow((
         "7%: ", sum(entry.ordered_item for entry in queryset.filter(tax=7))))

@@ -160,11 +160,8 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = fields = ['firstname', 'lastname',
-                           'code', 'active', 'last_ordered']
-    last_ordered = serializers.SerializerMethodField()
-    firstname = serializers.CharField(write_only=True)
-    lastname = serializers.CharField(write_only=True)
-    # enddate = serializers.DateTimeField(write_only=True)
+                           'code', 'active', 'enddate']
+    enddate = serializers.DateTimeField(write_only=True)
 
 
 class UserViewSet(viewsets.ModelViewSet):

@@ -1,4 +1,4 @@
-const API_URL = "http://213.239.215.91";
+const API_URL = "http://213.239.215.91:8080";
 
 
 function showCustomConfirm(message) {
@@ -74,9 +74,9 @@ function setCookie(cname, cvalue, exhrs) {
 function do_fetch(addr, method, body) {
     return fetch(`${API_URL}/${addr}/`, {
         method: method,
-        headers: {
-            "X-CSRFToken": getCookie("csrftoken")
-        },
+        // headers: {
+        //     "X-CSRFToken": getCookie("csrftoken")
+        // },
         body: method == "POST" ? body : undefined,
         signal: AbortSignal.timeout(5000),
         // credentials: "POST" ? "include" : undefined
@@ -196,9 +196,6 @@ window.addEventListener("load", async (event) => {
         setVisibility("popup-login", true);
     }
 
-
-
-
     preise = [
         "3.00",
         "3.50",
@@ -241,69 +238,69 @@ window.addEventListener("load", async (event) => {
 // -------------------Authentication functions-----------------------------------------------------------
 // https://dev.to/wiljeder/secure-authentication-with-jwts-rotating-refresh-tokens-typescript-express-vanilla-js-4f41
 
-async function login(e) {
-    e.preventDefault();
-    const formdata = new FormData(e.currentTarget)
-    try {
-        // getCSRF()
-        const res = await do_fetch("auth/login", "POST", formdata)
+// async function login(e) {
+//     e.preventDefault();
+//     const formdata = new FormData(e.currentTarget)
+//     try {
+//         // getCSRF()
+//         const res = await do_fetch("auth/login", "POST", formdata)
 
-        if (!res.ok) {
-            console.log("error while logging in")
-            console.log(res)
-            alert(await res.text())
-            return;
-        }
-        console.log("Logged in!");
-        setVisibility("popup-login", false);
-    } catch (error) {
-        console.error("Login failed:", error);
-        console.log("Login error occurred!");
-    }
-}
+//         if (!res.ok) {
+//             console.log("error while logging in")
+//             console.log(res)
+//             alert(await res.text())
+//             return;
+//         }
+//         console.log("Logged in!");
+//         setVisibility("popup-login", false);
+//     } catch (error) {
+//         console.error("Login failed:", error);
+//         console.log("Login error occurred!");
+//     }
+// }
 
-async function getCSRF() {
-    try {
-        let res = await fetch(`${API_URL}/csrf/`, {
-            method: "GET",
-            signal: AbortSignal.timeout(5000)
-        });
+// async function getCSRF() {
+//     try {
+//         let res = await fetch(`${API_URL}/csrf/`, {
+//             method: "GET",
+//             signal: AbortSignal.timeout(5000)
+//         });
 
-        if (res.ok) {
-            console.log(res)
-            const crsf = await res.body["csrfToken"]
+//         if (res.ok) {
+//             console.log(res)
+//             const crsf = await res.body["csrfToken"]
 
-            setCookie("csrftoken", crsf, 200)
-            return crsf
-        } else {
-            console.log("error retrieving crsf: " + await res.body())
-            return
-        }
-        console.log("is logged in")
-    } catch (error) {
-        console.error("Error retrieving crsf:", error);
-        alert(error.text)
-        return false
-    }
-    return true
-}
+//             setCookie("csrftoken", crsf, 200)
+//             return crsf
+//         } else {
+//             console.log("error retrieving crsf: " + await res.body())
+//             return
+//         }
+//         console.log("is logged in")
+//     } catch (error) {
+//         console.error("Error retrieving crsf:", error);
+//         alert(error.text)
+//         return false
+//     }
+//     return true
+// }
 
-async function check_authenticated(options) {
-    try {
-        getCSRF()
-        let res = await do_fetch("auth/verify", "GET", {});
+// async function check_authenticated(options) {
+//     try {
+//         getCSRF()
+//         let res = await do_fetch("auth/verify", "GET", {});
 
-        // If the token has expired or is invalid, try refreshing
-        if (!res.ok) {
-            setVisibility("popup-login", true);
-            return false
-        }
-        console.log("is logged in")
-    } catch (error) {
-        console.error("Error in check_authenticated:", error);
-        console.log("Error occurred while fetching secret.");
-        alert(error.text)
-        return false
-    }
-    return true
-}
+//         // If the token has expired or is invalid, try refreshing
+//         if (!res.ok) {
+//             setVisibility("popup-login", true);
+//             return false
+//         }
+//         console.log("is logged in")
+//     } catch (error) {
+//         console.error("Error in check_authenticated:", error);
+//         console.log("Error occurred while fetching secret.");
+//         alert(error.text)
+//         return false
+//     }
+//     return true
+// }
