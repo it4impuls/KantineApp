@@ -57,14 +57,22 @@ def get_barcode(pk) -> BytesIO:
     return rv
 
 
+def clean(**args):
+    for key in args:
+        to_clean = args[key]
+        assert type(to_clean) == str
+        args[key] = to_clean.replace(",", "").strip()
+    return args
+
+
 def handle_upload(f: InMemoryUploadedFile):
     file = f.read().decode('utf-8').split("\n")
     ret = {"added": [], "duplicate": []}
-    try:
-
-        for line in DictReader(file, fieldnames=["firstname", "lastname"], dialect='excel', delimiter=';', lineterminator='\r\n'):
+    for line in DictReader(file, fieldnames=["firstname", "lastname"], dialect='excel', delimiter=';', lineterminator='\r\n'):
+        try:
             if (not line):
                 continue
+            line = clean(**line)
             existing = User.objects.all().filter(**line)
             if (existing):
                 line["code"] = format_html(
@@ -72,14 +80,15 @@ def handle_upload(f: InMemoryUploadedFile):
                 ret['duplicate'].append(" ".join(str(val)
                                         for val in line.values()))
                 continue
+
             u = User(**line)
             u.save()
             line["code"] = format_html(
                 '<img src="/{}/{}/{}" />', "users", u.code, "barcode")
             ret["added"].append(" ".join(str(val) for val in line.values()))
-    except Exception as e:
-        print("new error: "+e)
-        # raise e
+        except Exception as e:
+            print("new error: "+e)
+            # raise e
     return ret
 
 
