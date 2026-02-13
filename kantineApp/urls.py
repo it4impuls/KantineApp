@@ -6,7 +6,8 @@ from .views import is_loggedin, login, get_csrf_token
 from django.views.generic.base import RedirectView
 
 urlpatterns = [
-    re_path(r'^', RedirectView.as_view(url='https://kantine.impuls-reha.de', permanent=True)),
+    re_path('robots.txt', RedirectView.as_view(url='https://kantine.impuls-reha.de/robots.txt', permanent=True)),
+    re_path(r'^', RedirectView.as_view(url='https://kantine.impuls-reha.de/admin', permanent=True)),
     # path('admin/', admin.site.urls),
     # path('api/', include('rest_framework.urls', namespace='rest_framework')),
     # path('auth/login/', login, name='login'),
@@ -14,4 +15,4 @@ urlpatterns = [
     # path('csrf/', get_csrf_token, name='get_csrf_token'),
 ]
 
-urlpatterns += staticfiles_urlpatterns()
+# urlpatterns += staticfiles_urlpatterns()
